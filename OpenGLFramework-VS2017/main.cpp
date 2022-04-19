@@ -606,8 +606,8 @@ void setupRC()
 	// OpenGL States and Values
 	glClearColor(0.2, 0.2, 0.2, 1.0);
 	vector<string> model_list{ "../ColorModels/bunny5KC.obj", "../ColorModels/dragon10KC.obj", "../ColorModels/lucy25KC.obj", "../ColorModels/teapot4KC.obj", "../ColorModels/dolphinC.obj"};
-	// [TODO] Load five model at here
-	LoadModels(model_list[cur_idx]);
+	// Load five model at here
+  for (auto& modelFilePath : model_list) LoadModels(modelFilePath);
   // load plane
   loadPlane();  
 }
