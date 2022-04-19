@@ -182,10 +182,25 @@ Matrix4 rotate(Vector3 vec)
 	return rotateX(vec.x)*rotateY(vec.y)*rotateZ(vec.z);
 }
 
-// [TODO] compute viewing matrix accroding to the setting of main_camera
+// compute viewing matrix accroding to the setting of main_camera
 void setViewingMatrix()
 {
-	// view_matrix[...] = ...
+  Vector3 eyeToCenter = main_camera.center - main_camera.position;
+  Vector3 rz = -eyeToCenter.normalize();
+  Vector3 rx = eyeToCenter.cross(main_camera.up_vector - main_camera.position).normalize();
+  Vector3 ry = rz.cross(rx);
+  view_matrix = Matrix4(
+  rx.x, rx.y, rx.z, 0.f,
+  ry.x, ry.y, ry.z, 0.f,
+  rz.x, rz.y, rz.z, 0.f,
+  0.f,  0.f,  0.f,  1.f
+  );
+  view_matrix *= Matrix4(
+  1.f, 0.f, 0.f, -main_camera.position.x,
+  0.f, 1.f, 0.f, -main_camera.position.y,
+  0.f, 0.f, 1.f, -main_camera.position.z,
+  0.f, 0.f, 0.f, 1.f
+  );
 }
 
 // [TODO] compute orthogonal projection matrix
