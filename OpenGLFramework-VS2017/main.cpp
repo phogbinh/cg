@@ -153,17 +153,15 @@ Matrix4 rotateX(GLfloat val)
 	return mat;
 }
 
-// [TODO] given a float value then ouput a rotation matrix alone axis-Y (rotate alone axis-Y)
+// given a float value then ouput a rotation matrix alone axis-Y (rotate alone axis-Y)
 Matrix4 rotateY(GLfloat val)
 {
-	Matrix4 mat;
-
-	/*
-	mat = Matrix4(
-		...
-	);
-	*/
-
+	Matrix4 mat(
+  cos(val),  0.f, sin(val), 0.f,
+  0.f,       1.f, 0.f,      0.f,
+  -sin(val), 0.f, cos(val), 0.f,
+  0.f,       0.f, 0.f,      1.f
+  );
 	return mat;
 }
 
