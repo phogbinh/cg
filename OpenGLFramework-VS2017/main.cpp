@@ -141,17 +141,15 @@ Matrix4 scaling(Vector3 vec)
 }
 
 
-// [TODO] given a float value then ouput a rotation matrix alone axis-X (rotate alone axis-X)
+// given a float value then ouput a rotation matrix alone axis-X (rotate alone axis-X)
 Matrix4 rotateX(GLfloat val)
 {
-	Matrix4 mat;
-
-	/*
-	mat = Matrix4(
-		...
-	);
-	*/
-
+	Matrix4 mat(
+  1.f, 0.f,      0.f,       0.f,
+  0.f, cos(val), -sin(val), 0.f,
+  0.f, sin(val), cos(val),  0.f,
+  0.f, 0.f,      0.f,       1.f
+  );
 	return mat;
 }
 
