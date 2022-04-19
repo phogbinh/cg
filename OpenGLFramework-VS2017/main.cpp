@@ -92,7 +92,7 @@ typedef struct
 	GLuint m_texture;
 } Shape;
 Shape quad;
-Shape m_shpae;
+Shape g_plane;
 vector<Shape> m_shape_list;
 int cur_idx = 0; // represent which model should be rendered now
 
@@ -240,22 +240,9 @@ void ChangeSize(GLFWwindow* window, int width, int height)
 
 void drawPlane()
 {
-	GLfloat vertices[18]{ 1.0, -0.9, -1.0,
-		1.0, -0.9,  1.0,
-		-1.0, -0.9, -1.0,
-		1.0, -0.9,  1.0,
-		-1.0, -0.9,  1.0,
-		-1.0, -0.9, -1.0 };
-
-	GLfloat colors[18]{ 0.0,1.0,0.0,
-		0.0,0.5,0.8,
-		0.0,1.0,0.0,
-		0.0,0.5,0.8,
-		0.0,0.5,0.8,
-		0.0,1.0,0.0 };
-
-
-	// [TODO] draw the plane with above vertices and color
+	// draw the plane with above vertices and color
+  glBindVertexArray(g_plane.vao);
+  glDrawArrays(GL_TRIANGLES, 0, g_plane.vertex_count);
 }
 
 // Render function for display rendering
@@ -553,6 +540,44 @@ void LoadModels(string model_path)
   glBindVertexArray(0);
 }
 
+void loadPlane() {
+  GLfloat vertices[18]{
+  1.0, -0.9, -1.0,
+  1.0, -0.9,  1.0,
+  -1.0, -0.9, -1.0,
+  1.0, -0.9,  1.0,
+  -1.0, -0.9,  1.0,
+  -1.0, -0.9, -1.0
+  };
+  GLfloat colors[18]{
+  0.0, 1.0, 0.0,
+  0.0, 0.5, 0.8,
+  0.0, 1.0, 0.0,
+  0.0, 0.5, 0.8,
+  0.0, 0.5, 0.8,
+  0.0, 1.0, 0.0
+  };
+  g_plane.vertex_count = 18 / 3;
+
+  glGenVertexArrays(1, &g_plane.vao);
+  glBindVertexArray(g_plane.vao);
+
+  glGenBuffers(1, &g_plane.vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, g_plane.vbo);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+  glEnableVertexAttribArray(0);
+
+  glGenBuffers(1, &g_plane.p_color);
+  glBindBuffer(GL_ARRAY_BUFFER, g_plane.p_color);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+  glEnableVertexAttribArray(1);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+}
+
 void initParameter()
 {
 	proj.left = -1;
@@ -583,6 +608,8 @@ void setupRC()
 	vector<string> model_list{ "../ColorModels/bunny5KC.obj", "../ColorModels/dragon10KC.obj", "../ColorModels/lucy25KC.obj", "../ColorModels/teapot4KC.obj", "../ColorModels/dolphinC.obj"};
 	// [TODO] Load five model at here
 	LoadModels(model_list[cur_idx]);
+  // load plane
+  loadPlane();  
 }
 
 void glPrintContextInfo(bool printExtension)
