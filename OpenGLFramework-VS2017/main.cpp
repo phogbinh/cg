@@ -215,11 +215,16 @@ void setOrthogonal()
   );
 }
 
-// [TODO] compute persepective projection matrix
+// compute persepective projection matrix
 void setPerspective()
 {
 	cur_proj_mode = Perspective;
-	// project_matrix [...] = ...
+  project_matrix = Matrix4(
+  2.f * proj.nearClip / (proj.right - proj.left), 0.f,                                            -(proj.right + proj.left) / (proj.right - proj.left),            0.f,
+  0.f,                                            2.f * proj.nearClip / (proj.top - proj.bottom), -(proj.top + proj.bottom) / (proj.top - proj.bottom),            0.f,
+  0.f,                                            0.f,                                            (proj.farClip + proj.nearClip) / (proj.farClip - proj.nearClip), -2.f * proj.farClip * proj.nearClip / (proj.farClip - proj.nearClip),
+  0.f,                                            0.f,                                            1.f,                                                             0.f
+  );
 }
 
 
