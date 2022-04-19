@@ -116,17 +116,15 @@ static GLvoid Cross(GLfloat u[3], GLfloat v[3], GLfloat n[3])
 }
 
 
-// [TODO] given a translation vector then output a Matrix4 (Translation Matrix)
+// given a translation vector then output a Matrix4 (Translation Matrix)
 Matrix4 translate(Vector3 vec)
 {
-	Matrix4 mat;
-
-	/*
-	mat = Matrix4(
-		...
-	);
-	*/
-
+	Matrix4 mat(
+  1.f, 0.f, 0.f, vec.x,
+  0.f, 1.f, 0.f, vec.y,
+  0.f, 0.f, 1.f, vec.z,
+  0.f, 0.f, 0.f, 1.f
+  );
 	return mat;
 }
 
