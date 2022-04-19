@@ -128,17 +128,15 @@ Matrix4 translate(Vector3 vec)
 	return mat;
 }
 
-// [TODO] given a scaling vector then output a Matrix4 (Scaling Matrix)
+// given a scaling vector then output a Matrix4 (Scaling Matrix)
 Matrix4 scaling(Vector3 vec)
 {
-	Matrix4 mat;
-
-	/*
-	mat = Matrix4(
-		...
-	);
-	*/
-
+	Matrix4 mat(
+  vec.x, 0.f,   0.f,   0.f,
+  0.f,   vec.y, 0.f,   0.f,
+  0.f,   0.f,   vec.z, 0.f,
+  0.f,   0.f,   0.f,   1.f
+  );
 	return mat;
 }
 
