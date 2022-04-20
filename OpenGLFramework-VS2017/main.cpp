@@ -255,10 +255,10 @@ void RenderScene(void) {
 
   Matrix4 T = translate(models[cur_idx].position);
   Matrix4 R;
-  Matrix4 S;
+  Matrix4 S = scaling(models[cur_idx].scale);
 	// [TODO] update translation, rotation and scaling
 
-	Matrix4 MVP = project_matrix * view_matrix * T;
+	Matrix4 MVP = project_matrix * view_matrix * T * S;
 	GLfloat mvp[16];
 
 	// [TODO] multiply all the matrix
@@ -316,6 +316,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     cur_trans_mode = GeoTranslation;
     return;
   }
+  if (key == GLFW_KEY_S && action == GLFW_PRESS) {
+    cur_trans_mode = GeoScaling;
+    return;
+  }
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -323,6 +327,10 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	// [TODO] scroll up positive, otherwise it would be negtive
   if (cur_trans_mode == GeoTranslation) {
     models[cur_idx].position.z += yoffset;
+    return;
+  }
+  if (cur_trans_mode == GeoScaling) {
+    models[cur_idx].scale.z += yoffset / 10.f;
     return;
   }
 }
@@ -358,6 +366,20 @@ static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
     int yoffset = starting_press_y - y;
     models[cur_idx].position.x += xoffset / 200.f;
     models[cur_idx].position.y += yoffset / 200.f;
+    starting_press_x = x;
+    starting_press_y = y;
+    return;
+  }
+  if (cur_trans_mode == GeoScaling) {
+    if (starting_press_x == -1 && starting_press_y == -1) {
+      starting_press_x = x;
+      starting_press_y = y;
+      return;
+    }
+    int xoffset = x - starting_press_x;
+    int yoffset = starting_press_y - y;
+    models[cur_idx].scale.x += xoffset / 200.f;
+    models[cur_idx].scale.y += yoffset / 200.f;
     starting_press_x = x;
     starting_press_y = y;
     return;
