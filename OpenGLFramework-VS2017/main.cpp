@@ -208,10 +208,10 @@ void setOrthogonal()
 {
 	cur_proj_mode = Orthogonal;
   project_matrix = Matrix4(
-  2.f / (proj.right - proj.left), 0.f,                            0.f,                                  -(proj.right + proj.left) / (proj.right - proj.left),
-  0.f,                            2.f / (proj.top - proj.bottom), 0.f,                                  -(proj.top + proj.bottom) / (proj.top - proj.bottom),
-  0.f,                            0.f,                            2.f / (proj.farClip - proj.nearClip), -(proj.farClip + proj.nearClip) / (proj.farClip - proj.nearClip),
-  0.f,                            0.f,                            0.f,                                  1.f
+  2.f / (proj.right - proj.left), 0.f,                            0.f,                                   -(proj.right + proj.left) / (proj.right - proj.left),
+  0.f,                            2.f / (proj.top - proj.bottom), 0.f,                                   -(proj.top + proj.bottom) / (proj.top - proj.bottom),
+  0.f,                            0.f,                            -2.f / (proj.farClip - proj.nearClip), -(proj.farClip + proj.nearClip) / (proj.farClip - proj.nearClip),
+  0.f,                            0.f,                            0.f,                                   1.f
   );
 }
 
