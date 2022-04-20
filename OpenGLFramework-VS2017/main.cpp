@@ -190,7 +190,7 @@ void setViewingMatrix()
   Vector3 normalizedEyeToCenter = eyeToCenter; normalizedEyeToCenter.normalize();
   Vector3 normalizedUp = main_camera.up_vector; normalizedUp.normalize();
   Vector3 firstRow = normalizedEyeToCenter.cross(normalizedUp);
-  Vector3 secondRow = firstRow.cross(eyeToCenter);
+  Vector3 secondRow = firstRow.cross(normalizedEyeToCenter);
   Vector3 thirdRow = -normalizedEyeToCenter;
   view_matrix = Matrix4(
   firstRow.x,  firstRow.y,  firstRow.z,  0.f,
