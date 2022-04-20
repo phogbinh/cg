@@ -187,14 +187,16 @@ Matrix4 rotate(Vector3 vec)
 void setViewingMatrix()
 {
   Vector3 eyeToCenter = main_camera.center - main_camera.position;
-  Vector3 rz = -eyeToCenter.normalize();
-  Vector3 rx = eyeToCenter.cross(main_camera.up_vector - main_camera.position).normalize();
-  Vector3 ry = rz.cross(rx);
+  Vector3 normalizedEyeToCenter = eyeToCenter; normalizedEyeToCenter.normalize();
+  Vector3 normalizedUp = main_camera.up_vector; normalizedUp.normalize();
+  Vector3 firstRow = normalizedEyeToCenter.cross(normalizedUp);
+  Vector3 secondRow = firstRow.cross(eyeToCenter);
+  Vector3 thirdRow = -normalizedEyeToCenter;
   view_matrix = Matrix4(
-  rx.x, rx.y, rx.z, 0.f,
-  ry.x, ry.y, ry.z, 0.f,
-  rz.x, rz.y, rz.z, 0.f,
-  0.f,  0.f,  0.f,  1.f
+  firstRow.x,  firstRow.y,  firstRow.z,  0.f,
+  secondRow.x, secondRow.y, secondRow.z, 0.f,
+  thirdRow.x,  thirdRow.y,  thirdRow.z,  0.f,
+  0.f,         0.f,         0.f,         1.f
   );
   view_matrix *= Matrix4(
   1.f, 0.f, 0.f, -main_camera.position.x,
