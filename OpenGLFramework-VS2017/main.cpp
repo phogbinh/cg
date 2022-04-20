@@ -96,7 +96,7 @@ Shape quad;
 Shape g_plane;
 vector<Shape> m_shape_list;
 int cur_idx = 0; // represent which model should be rendered now
-
+bool g_isWireframe = false;
 
 static GLvoid Normalize(GLfloat v[3])
 {
@@ -281,6 +281,17 @@ void RenderScene(void) {
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// [TODO] Call back function for keyboard
+  if (key == GLFW_KEY_W && action == GLFW_PRESS) {
+    if (g_isWireframe) {
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      g_isWireframe = false;
+    }
+    else {
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      g_isWireframe = true;
+    }
+    return;
+  }
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
