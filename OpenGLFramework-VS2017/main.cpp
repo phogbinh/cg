@@ -304,6 +304,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     return;
   }
+  if (key == GLFW_KEY_O && action == GLFW_PRESS) {
+    setOrthogonal();
+    return;
+  }
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
