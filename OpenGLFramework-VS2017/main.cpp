@@ -220,7 +220,8 @@ void setOrthogonal()
 void setPerspective()
 {
 	cur_proj_mode = Perspective;
-  float angle = cos(proj.fovy / 2.f) / sin(proj.fovy / 2.f);
+  float radian = proj.fovy / 180.f * M_PI;
+  float angle = cos(radian / 2.f) / sin(radian / 2.f);
   project_matrix = Matrix4(
   angle / proj.aspect, 0.f,   0.f,                                                             0.f,
   0.f,                 angle, 0.f,                                                             0.f,
