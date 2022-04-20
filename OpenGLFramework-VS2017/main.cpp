@@ -253,12 +253,12 @@ void RenderScene(void) {
 	// clear canvas
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-  Matrix4 T;
+  Matrix4 T = translate(models[cur_idx].position);
   Matrix4 R;
   Matrix4 S;
 	// [TODO] update translation, rotation and scaling
 
-	Matrix4 MVP = project_matrix * view_matrix;
+	Matrix4 MVP = project_matrix * view_matrix * T;
 	GLfloat mvp[16];
 
 	// [TODO] multiply all the matrix
@@ -312,11 +312,19 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     setPerspective();
     return;
   }
+  if (key == GLFW_KEY_T && action == GLFW_PRESS) {
+    cur_trans_mode = GeoTranslation;
+    return;
+  }
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	// [TODO] scroll up positive, otherwise it would be negtive
+  if (cur_trans_mode == GeoTranslation) {
+    models[cur_idx].position.z += yoffset;
+    return;
+  }
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
