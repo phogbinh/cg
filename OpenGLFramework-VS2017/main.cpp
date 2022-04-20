@@ -253,12 +253,12 @@ void RenderScene(void) {
 	// clear canvas
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-  Matrix4 T = translate(-models[cur_idx].position);
-  Matrix4 R = rotateY(-models[cur_idx].rotation.y) * rotateX(-models[cur_idx].rotation.x);
+  Matrix4 T;
+  Matrix4 R;
   Matrix4 S;
 	// [TODO] update translation, rotation and scaling
 
-	Matrix4 MVP = project_matrix * view_matrix * R * T;
+	Matrix4 MVP = project_matrix * view_matrix;
 	GLfloat mvp[16];
 
 	// [TODO] multiply all the matrix
@@ -532,10 +532,6 @@ void LoadModels(string model_path)
 
 	m_shape_list.push_back(tmp_shape);
 	model tmp_model;
-  for (int i = 0; i <= vertices.size() - 3; i = i + 3) {
-    tmp_model.position += Vector3(vertices[i], vertices[i + 1], vertices[i + 2]);
-  }
-  tmp_model.position = tmp_model.position / tmp_shape.vertex_count;
 	models.push_back(tmp_model);
 
 
@@ -617,11 +613,6 @@ void setupRC()
 	vector<string> model_list{ "../ColorModels/bunny5KC.obj", "../ColorModels/dragon10KC.obj", "../ColorModels/lucy25KC.obj", "../ColorModels/teapot4KC.obj", "../ColorModels/dolphinC.obj"};
 	// Load five model at here
   for (auto& modelFilePath : model_list) LoadModels(modelFilePath);
-  models[0].rotation = Vector3(M_PI, M_PI, 0.f);
-  models[1].rotation = Vector3(M_PI, M_PI, 0.f);
-  models[2].rotation = Vector3(M_PI, M_PI, 0.f);
-  models[3].rotation = Vector3(-M_PI / 2.f, 0.f, 0.f);
-  models[4].rotation = Vector3(M_PI, M_PI, 0.f);
   // load plane
   loadPlane();  
 }
