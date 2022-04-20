@@ -253,7 +253,7 @@ void RenderScene(void) {
 	Matrix4 T, R, S;
 	// [TODO] update translation, rotation and scaling
 
-	Matrix4 MVP;
+	Matrix4 MVP = project_matrix * view_matrix;
 	GLfloat mvp[16];
 
 	// [TODO] multiply all the matrix
@@ -585,7 +585,7 @@ void initParameter()
 	proj.top = 1;
 	proj.bottom = -1;
 	proj.nearClip = 0.001;
-	proj.farClip = 100.0;
+	proj.farClip = -100.0;
 	proj.fovy = 80;
 	proj.aspect = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
 
@@ -594,7 +594,7 @@ void initParameter()
 	main_camera.up_vector = Vector3(0.0f, 1.0f, 0.0f);
 
 	setViewingMatrix();
-	setPerspective();	//set default projection matrix as perspective matrix
+	setOrthogonal();	//set default projection matrix as perspective matrix
 }
 
 void setupRC()
