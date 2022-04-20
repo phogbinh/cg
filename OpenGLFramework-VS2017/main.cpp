@@ -219,11 +219,12 @@ void setOrthogonal()
 void setPerspective()
 {
 	cur_proj_mode = Perspective;
+  float angle = cos(proj.fovy / 2.f) / sin(proj.fovy / 2.f);
   project_matrix = Matrix4(
-  2.f * proj.nearClip / (proj.right - proj.left), 0.f,                                            -(proj.right + proj.left) / (proj.right - proj.left),            0.f,
-  0.f,                                            2.f * proj.nearClip / (proj.top - proj.bottom), -(proj.top + proj.bottom) / (proj.top - proj.bottom),            0.f,
-  0.f,                                            0.f,                                            (proj.farClip + proj.nearClip) / (proj.farClip - proj.nearClip), -2.f * proj.farClip * proj.nearClip / (proj.farClip - proj.nearClip),
-  0.f,                                            0.f,                                            1.f,                                                             0.f
+  angle / proj.aspect, 0.f,   0.f,                                                             0.f,
+  0.f,                 angle, 0.f,                                                             0.f,
+  0.f,                 0.f,   (proj.farClip + proj.nearClip) / (proj.nearClip - proj.farClip), 2.f * proj.farClip * proj.nearClip / (proj.nearClip - proj.farClip),
+  0.f,                 0.f,   -1.f,                                                            0.f
   );
 }
 
@@ -253,7 +254,7 @@ void RenderScene(void) {
 	Matrix4 T, R, S;
 	// [TODO] update translation, rotation and scaling
 
-	Matrix4 MVP;
+	Matrix4 MVP = project_matrix * view_matrix;
 	GLfloat mvp[16];
 
 	// [TODO] multiply all the matrix
