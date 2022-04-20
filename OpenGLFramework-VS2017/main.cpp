@@ -292,6 +292,18 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     return;
   }
+  if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
+    if (cur_idx > 0) {
+      --cur_idx;
+    }
+    return;
+  }
+  if (key == GLFW_KEY_X && action == GLFW_PRESS) {
+    if (cur_idx < models.size() - 1) {
+      ++cur_idx;
+    }
+    return;
+  }
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
