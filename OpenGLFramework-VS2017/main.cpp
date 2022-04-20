@@ -324,6 +324,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     cur_trans_mode = GeoRotation;
     return;
   }
+  if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+    cur_trans_mode = ViewEye;
+    return;
+  }
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -339,6 +343,11 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
   }
   if (cur_trans_mode == GeoRotation) {
     models[cur_idx].rotation.z += yoffset / 5.f;
+    return;
+  }
+  if (cur_trans_mode == ViewEye) {
+    main_camera.position.z -= yoffset / 10.f;
+    setViewingMatrix();
     return;
   }
 }
@@ -402,6 +411,21 @@ static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
     int yoffset = starting_press_y - y;
     models[cur_idx].rotation.x += yoffset / 200.f;
     models[cur_idx].rotation.y -= xoffset / 200.f;
+    starting_press_x = x;
+    starting_press_y = y;
+    return;
+  }
+  if (cur_trans_mode == ViewEye) {
+    if (starting_press_x == -1 && starting_press_y == -1) {
+      starting_press_x = x;
+      starting_press_y = y;
+      return;
+    }
+    int xoffset = x - starting_press_x;
+    int yoffset = starting_press_y - y;
+    main_camera.position.x -= xoffset / 200.f;
+    main_camera.position.y -= yoffset / 200.f;
+    setViewingMatrix();
     starting_press_x = x;
     starting_press_y = y;
     return;
