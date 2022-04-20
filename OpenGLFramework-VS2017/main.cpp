@@ -61,7 +61,7 @@ camera main_camera;
 struct project_setting
 {
 	GLfloat nearClip, farClip;
-	GLfloat fovy;
+	GLfloat fovy; // degree
 	GLfloat aspect;
 	GLfloat left, right, top, bottom;
 };
@@ -591,7 +591,7 @@ void initParameter()
 	proj.bottom = -1;
 	proj.nearClip = 0.001;
 	proj.farClip = 100.0;
-	proj.fovy = 80;
+	proj.fovy = 80; // degree
 	proj.aspect = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
 
 	main_camera.position = Vector3(0.0f, 0.0f, 2.0f);
