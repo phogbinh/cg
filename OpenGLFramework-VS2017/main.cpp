@@ -330,12 +330,38 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	// [TODO] mouse press callback function
-		
+  if (action == GLFW_PRESS) {
+    mouse_pressed = true;
+    return;
+  }
+  if (action == GLFW_RELEASE) {
+    mouse_pressed = false;
+    starting_press_x = -1;
+    starting_press_y = -1;
+    return;
+  }
 }
 
 static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	// [TODO] cursor position callback function
+  if (!mouse_pressed) return;
+  int x = (int)xpos;
+  int y = (int)ypos;
+  if (cur_trans_mode == GeoTranslation) {
+    if (starting_press_x == -1 && starting_press_y == -1) {
+      starting_press_x = x;
+      starting_press_y = y;
+      return;
+    }
+    int xoffset = x - starting_press_x;
+    int yoffset = starting_press_y - y;
+    models[cur_idx].position.x += xoffset / 200.f;
+    models[cur_idx].position.y += yoffset / 200.f;
+    starting_press_x = x;
+    starting_press_y = y;
+    return;
+  }
 }
 
 void setShaders()
