@@ -584,7 +584,7 @@ void initParameter()
 	proj.right = 1;
 	proj.top = 1;
 	proj.bottom = -1;
-	proj.nearClip = 0.001;
+	proj.nearClip = -2;
 	proj.farClip = -100.0;
 	proj.fovy = 80;
 	proj.aspect = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
