@@ -392,93 +392,45 @@ static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
   if (!mouse_pressed) return;
   int x = (int)xpos;
   int y = (int)ypos;
+  if (starting_press_x == -1 && starting_press_y == -1) {
+    starting_press_x = x;
+    starting_press_y = y;
+    return;
+  }
+  int xoffset = x - starting_press_x;
+  int yoffset = starting_press_y - y;
   if (cur_trans_mode == GeoTranslation) {
-    if (starting_press_x == -1 && starting_press_y == -1) {
-      starting_press_x = x;
-      starting_press_y = y;
-      return;
-    }
-    int xoffset = x - starting_press_x;
-    int yoffset = starting_press_y - y;
     models[cur_idx].position.x += xoffset / 200.f;
     models[cur_idx].position.y += yoffset / 200.f;
-    starting_press_x = x;
-    starting_press_y = y;
-    return;
   }
-  if (cur_trans_mode == GeoScaling) {
-    if (starting_press_x == -1 && starting_press_y == -1) {
-      starting_press_x = x;
-      starting_press_y = y;
-      return;
-    }
-    int xoffset = x - starting_press_x;
-    int yoffset = starting_press_y - y;
+  else if (cur_trans_mode == GeoScaling) {
     models[cur_idx].scale.x += xoffset / 200.f;
     models[cur_idx].scale.y += yoffset / 200.f;
-    starting_press_x = x;
-    starting_press_y = y;
-    return;
   }
-  if (cur_trans_mode == GeoRotation) {
-    if (starting_press_x == -1 && starting_press_y == -1) {
-      starting_press_x = x;
-      starting_press_y = y;
-      return;
-    }
-    int xoffset = x - starting_press_x;
-    int yoffset = starting_press_y - y;
+  else if (cur_trans_mode == GeoRotation) {
     models[cur_idx].rotation.x += yoffset / 200.f;
     models[cur_idx].rotation.y -= xoffset / 200.f;
-    starting_press_x = x;
-    starting_press_y = y;
-    return;
   }
-  if (cur_trans_mode == ViewEye) {
-    if (starting_press_x == -1 && starting_press_y == -1) {
-      starting_press_x = x;
-      starting_press_y = y;
-      return;
-    }
-    int xoffset = x - starting_press_x;
-    int yoffset = starting_press_y - y;
+  else if (cur_trans_mode == ViewEye) {
     main_camera.position.x -= xoffset / 200.f;
     main_camera.position.y -= yoffset / 200.f;
     setViewingMatrix();
-    starting_press_x = x;
-    starting_press_y = y;
-    return;
   }
-  if (cur_trans_mode == ViewCenter) {
-    if (starting_press_x == -1 && starting_press_y == -1) {
-      starting_press_x = x;
-      starting_press_y = y;
-      return;
-    }
-    int xoffset = x - starting_press_x;
-    int yoffset = starting_press_y - y;
+  else if (cur_trans_mode == ViewCenter) {
     main_camera.center.x -= xoffset / 200.f;
     main_camera.center.y += yoffset / 200.f;
     setViewingMatrix();
-    starting_press_x = x;
-    starting_press_y = y;
-    return;
   }
-  if (cur_trans_mode == ViewUp) {
-    if (starting_press_x == -1 && starting_press_y == -1) {
-      starting_press_x = x;
-      starting_press_y = y;
-      return;
-    }
-    int xoffset = x - starting_press_x;
-    int yoffset = starting_press_y - y;
+  else if (cur_trans_mode == ViewUp) {
     main_camera.up_vector.x -= xoffset / 200.f;
     main_camera.up_vector.y += yoffset / 200.f;
     setViewingMatrix();
-    starting_press_x = x;
-    starting_press_y = y;
-    return;
   }
+  else {
+    // intentionally empty
+  }
+  starting_press_x = x;
+  starting_press_y = y;
 }
 
 void setShaders()
