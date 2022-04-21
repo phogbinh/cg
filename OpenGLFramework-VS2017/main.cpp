@@ -334,6 +334,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     cur_trans_mode = ViewCenter;
     return;
   }
+  if (key == GLFW_KEY_U && action == GLFW_PRESS) {
+    cur_trans_mode = ViewUp;
+    return;
+  }
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -358,6 +362,11 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
   }
   if (cur_trans_mode == ViewCenter) {
     main_camera.center.z += yoffset;
+    setViewingMatrix();
+    return;
+  }
+  if (cur_trans_mode == ViewUp) {
+    main_camera.up_vector.z += yoffset;
     setViewingMatrix();
     return;
   }
