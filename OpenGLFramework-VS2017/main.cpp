@@ -245,6 +245,13 @@ void ChangeSize(GLFWwindow* window, int width, int height)
 void drawPlane()
 {
 	// draw the plane with above vertices and color
+  Matrix4 MVP = project_matrix * view_matrix;
+  GLfloat mvp[16];
+  mvp[0] = MVP[0];  mvp[4] = MVP[1];  mvp[8] = MVP[2];   mvp[12] = MVP[3];
+  mvp[1] = MVP[4];  mvp[5] = MVP[5];  mvp[9] = MVP[6];   mvp[13] = MVP[7];
+  mvp[2] = MVP[8];  mvp[6] = MVP[9];  mvp[10] = MVP[10]; mvp[14] = MVP[11];
+  mvp[3] = MVP[12]; mvp[7] = MVP[13]; mvp[11] = MVP[14]; mvp[15] = MVP[15];
+  glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp);
   glBindVertexArray(g_plane.vao);
   glDrawArrays(GL_TRIANGLES, 0, g_plane.vertex_count);
 }
