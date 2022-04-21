@@ -272,9 +272,7 @@ void RenderScene(void) {
 	Matrix4 MVP = project_matrix * view_matrix * T * R * S;
 	GLfloat mvp[16];
 
-	// [TODO] multiply all the matrix
 	// row-major ---> column-major
-
   mvp[0] = MVP[0];  mvp[4] = MVP[1];  mvp[8] = MVP[2];   mvp[12] = MVP[3];
   mvp[1] = MVP[4];  mvp[5] = MVP[5];  mvp[9] = MVP[6];   mvp[13] = MVP[7];
   mvp[2] = MVP[8];  mvp[6] = MVP[9];  mvp[10] = MVP[10]; mvp[14] = MVP[11];
@@ -291,7 +289,7 @@ void RenderScene(void) {
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	// [TODO] Call back function for keyboard
+	// Call back function for keyboard
   if (key == GLFW_KEY_W && action == GLFW_PRESS) {
     if (g_isWireframe) {
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -365,7 +363,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	// [TODO] scroll up positive, otherwise it would be negtive
+	// scroll up positive, otherwise it would be negtive
   if (cur_trans_mode == GeoTranslation) {
     models[cur_idx].position.z += yoffset;
     return;
@@ -397,7 +395,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	// [TODO] mouse press callback function
+	// mouse press callback function
   if (action == GLFW_PRESS) {
     mouse_pressed = true;
     return;
@@ -412,7 +410,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	// [TODO] cursor position callback function
+	// cursor position callback function
   if (!mouse_pressed) return;
   int x = (int)xpos;
   int y = (int)ypos;
