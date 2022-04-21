@@ -242,7 +242,9 @@ GLuint VAO, VBO;
 void ChangeSize(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
-	// [TODO] change your aspect ratio
+	// change your aspect ratio
+  proj.aspect = (float)width / (float)height;
+  setPerspective();
 }
 
 void drawPlane()
