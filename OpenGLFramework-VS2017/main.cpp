@@ -97,6 +97,9 @@ Shape g_plane;
 vector<Shape> m_shape_list;
 int cur_idx = 0; // represent which model should be rendered now
 bool g_isWireframe = false;
+Matrix4 g_translation;
+Matrix4 g_rotation;
+Matrix4 g_scaling;
 
 static GLvoid Normalize(GLfloat v[3])
 {
@@ -264,8 +267,8 @@ void RenderScene(void) {
   Matrix4 T = translate(models[cur_idx].position);
   Matrix4 R = rotate(models[cur_idx].rotation);
   Matrix4 S = scaling(models[cur_idx].scale);
-	// [TODO] update translation, rotation and scaling
-
+	// update translation, rotation and scaling
+  g_translation = T; g_rotation = R; g_scaling = S;
 	Matrix4 MVP = project_matrix * view_matrix * T * R * S;
 	GLfloat mvp[16];
 
@@ -342,6 +345,20 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
   }
   if (key == GLFW_KEY_U && action == GLFW_PRESS) {
     cur_trans_mode = ViewUp;
+    return;
+  }
+  if (key == GLFW_KEY_I && action == GLFW_PRESS) {
+    printf("Matrix Value:\n");
+    printf("Viewing Matrix:\n");
+    cout << view_matrix << endl;
+    printf("Projection Matrix:\n");
+    cout << project_matrix << endl;
+    printf("Translation Matrix:\n");
+    cout << g_translation << endl;
+    printf("Rotation Matrix:\n");
+    cout << g_rotation << endl;
+    printf("Scaling Matrix:\n");
+    cout << g_scaling << endl;
     return;
   }
 }
