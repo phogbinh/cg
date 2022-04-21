@@ -93,7 +93,6 @@ typedef struct
 	GLuint m_texture;
 } Shape;
 Shape quad;
-Shape g_plane;
 vector<Shape> m_shape_list;
 int cur_idx = 0; // represent which model should be rendered now
 bool g_isWireframe = false;
@@ -257,8 +256,8 @@ void drawPlane()
   mvp[2] = MVP[8];  mvp[6] = MVP[9];  mvp[10] = MVP[10]; mvp[14] = MVP[11];
   mvp[3] = MVP[12]; mvp[7] = MVP[13]; mvp[11] = MVP[14]; mvp[15] = MVP[15];
   glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp);
-  glBindVertexArray(g_plane.vao);
-  glDrawArrays(GL_TRIANGLES, 0, g_plane.vertex_count);
+  glBindVertexArray(quad.vao);
+  glDrawArrays(GL_TRIANGLES, 0, quad.vertex_count);
 }
 
 // Render function for display rendering
@@ -726,19 +725,19 @@ void loadPlane() {
   0.0, 0.5, 0.8,
   0.0, 1.0, 0.0
   };
-  g_plane.vertex_count = 18 / 3;
+  quad.vertex_count = 18 / 3;
 
-  glGenVertexArrays(1, &g_plane.vao);
-  glBindVertexArray(g_plane.vao);
+  glGenVertexArrays(1, &quad.vao);
+  glBindVertexArray(quad.vao);
 
-  glGenBuffers(1, &g_plane.vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, g_plane.vbo);
+  glGenBuffers(1, &quad.vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, quad.vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
   glEnableVertexAttribArray(0);
 
-  glGenBuffers(1, &g_plane.p_color);
-  glBindBuffer(GL_ARRAY_BUFFER, g_plane.p_color);
+  glGenBuffers(1, &quad.p_color);
+  glBindBuffer(GL_ARRAY_BUFFER, quad.p_color);
   glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
   glEnableVertexAttribArray(1);
