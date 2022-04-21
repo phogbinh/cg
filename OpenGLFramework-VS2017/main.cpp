@@ -307,11 +307,17 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     if (cur_idx > 0) {
       --cur_idx;
     }
+    else {
+      cur_idx = models.size() - 1;
+    }
     return;
   }
   if (key == GLFW_KEY_X && action == GLFW_PRESS) {
     if (cur_idx < models.size() - 1) {
       ++cur_idx;
+    }
+    else {
+      cur_idx = 0;
     }
     return;
   }
