@@ -464,6 +464,21 @@ static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
     starting_press_y = y;
     return;
   }
+  if (cur_trans_mode == ViewUp) {
+    if (starting_press_x == -1 && starting_press_y == -1) {
+      starting_press_x = x;
+      starting_press_y = y;
+      return;
+    }
+    int xoffset = x - starting_press_x;
+    int yoffset = starting_press_y - y;
+    main_camera.up_vector.x -= xoffset / 200.f;
+    main_camera.up_vector.y += yoffset / 200.f;
+    setViewingMatrix();
+    starting_press_x = x;
+    starting_press_y = y;
+    return;
+  }
 }
 
 void setShaders()
