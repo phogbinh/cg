@@ -39,6 +39,7 @@ enum TransMode
 };
 
 GLint iLocMVP;
+GLint iLocIsColorInvert;
 
 vector<string> filenames; // .obj filename list
 
@@ -99,6 +100,7 @@ bool g_isWireframe = false;
 Matrix4 g_translation;
 Matrix4 g_rotation;
 Matrix4 g_scaling;
+bool g_isColorInvert = false;
 
 static GLvoid Normalize(GLfloat v[3])
 {
@@ -256,6 +258,7 @@ void drawPlane()
   mvp[2] = MVP[8];  mvp[6] = MVP[9];  mvp[10] = MVP[10]; mvp[14] = MVP[11];
   mvp[3] = MVP[12]; mvp[7] = MVP[13]; mvp[11] = MVP[14]; mvp[15] = MVP[15];
   glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp);
+  glUniform1i(iLocIsColorInvert, false);
   glBindVertexArray(quad.vao);
   glDrawArrays(GL_TRIANGLES, 0, quad.vertex_count);
 }
@@ -281,6 +284,7 @@ void RenderScene(void) {
 
 	// use uniform to send mvp to vertex shader
 	glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp);
+  glUniform1i(iLocIsColorInvert, g_isColorInvert);
 	glBindVertexArray(m_shape_list[cur_idx].vao);
 	glDrawArrays(GL_TRIANGLES, 0, m_shape_list[cur_idx].vertex_count);
 	drawPlane();
@@ -364,6 +368,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     cout << g_rotation << endl;
     printf("Scaling Matrix:\n");
     cout << g_scaling << endl;
+    return;
+  }
+  if (key == GLFW_KEY_V && action == GLFW_PRESS) {
+    g_isColorInvert ^= 1;
     return;
   }
 }
@@ -522,6 +530,7 @@ void setShaders()
 	glDeleteShader(f);
 
 	iLocMVP = glGetUniformLocation(p, "mvp");
+  iLocIsColorInvert = glGetUniformLocation(p, "isColorInvert");
 
 	if (success)
 		glUseProgram(p);
