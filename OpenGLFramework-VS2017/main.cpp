@@ -23,6 +23,7 @@ using namespace std;
 // Default window size
 const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 600;
+const float PLANE_Y = -0.9f;
 
 bool mouse_pressed = false;
 int starting_press_x = -1;
@@ -719,12 +720,12 @@ void LoadModels(string model_path)
 
 void loadPlane() {
   GLfloat vertices[18]{
-  1.0, -0.9, -1.0,
-  1.0, -0.9,  1.0,
-  -1.0, -0.9, -1.0,
-  1.0, -0.9,  1.0,
-  -1.0, -0.9,  1.0,
-  -1.0, -0.9, -1.0
+  1.0,  PLANE_Y, -1.0,
+  1.0,  PLANE_Y,  1.0,
+  -1.0, PLANE_Y, -1.0,
+  1.0,  PLANE_Y,  1.0,
+  -1.0, PLANE_Y,  1.0,
+  -1.0, PLANE_Y, -1.0
   };
   GLfloat colors[18]{
   0.0, 1.0, 0.0,
