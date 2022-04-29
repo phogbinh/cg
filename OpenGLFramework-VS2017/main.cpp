@@ -12,6 +12,7 @@
 #include "Matrices.h"
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
+#include <filesystem>
 
 #ifndef max
 # define max(a,b) (((a)>(b))?(a):(b))
@@ -783,9 +784,8 @@ void setupRC()
 
 	// OpenGL States and Values
 	glClearColor(0.2, 0.2, 0.2, 1.0);
-	vector<string> model_list{ "../ColorModels/bunny5KC.obj", "../ColorModels/dragon10KC.obj", "../ColorModels/lucy25KC.obj", "../ColorModels/teapot4KC.obj", "../ColorModels/dolphinC.obj"};
 	// Load five model at here
-  for (auto& modelFilePath : model_list) LoadModels(modelFilePath);
+  for (auto &file : experimental::filesystem::directory_iterator("../ColorModels/")) LoadModels(file.path().generic_string());
   // load plane
   loadPlane();  
 }
