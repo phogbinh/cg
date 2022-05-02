@@ -262,6 +262,7 @@ void drawPlane()
   mvp[3] = MVP[12]; mvp[7] = MVP[13]; mvp[11] = MVP[14]; mvp[15] = MVP[15];
   glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp);
   glUniform1i(iLocIsColorInvert, false);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glBindVertexArray(quad.vao);
   glDrawArrays(GL_TRIANGLES, 0, quad.vertex_count);
 }
@@ -288,6 +289,8 @@ void RenderScene(void) {
 	// use uniform to send mvp to vertex shader
 	glUniformMatrix4fv(iLocMVP, 1, GL_FALSE, mvp);
   glUniform1i(iLocIsColorInvert, g_isColorInvert);
+  if (g_isWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBindVertexArray(m_shape_list[cur_idx].vao);
 	glDrawArrays(GL_TRIANGLES, 0, m_shape_list[cur_idx].vertex_count);
 	drawPlane();
@@ -299,14 +302,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 {
 	// Call back function for keyboard
   if (key == GLFW_KEY_W && action == GLFW_PRESS) {
-    if (g_isWireframe) {
-      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-      g_isWireframe = false;
-    }
-    else {
-      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-      g_isWireframe = true;
-    }
+    g_isWireframe ^= 1;
     return;
   }
   if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
