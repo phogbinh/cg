@@ -228,11 +228,13 @@ void setPerspective()
 	cur_proj_mode = Perspective;
   float radian = proj.fovy / 180.f * M_PI;
   float angle = cos(radian / 2.f) / sin(radian / 2.f);
+  float firstDiag  = proj.aspect >= 1.f ? angle / proj.aspect : angle;
+  float secondDiag = proj.aspect >= 1.f ? angle               : angle * proj.aspect;
   project_matrix = Matrix4(
-  angle / proj.aspect, 0.f,   0.f,                                                             0.f,
-  0.f,                 angle, 0.f,                                                             0.f,
-  0.f,                 0.f,   (proj.farClip + proj.nearClip) / (proj.nearClip - proj.farClip), 2.f * proj.farClip * proj.nearClip / (proj.nearClip - proj.farClip),
-  0.f,                 0.f,   -1.f,                                                            0.f
+  firstDiag, 0.f,        0.f,                                                             0.f,
+  0.f,       secondDiag, 0.f,                                                             0.f,
+  0.f,       0.f,        (proj.farClip + proj.nearClip) / (proj.nearClip - proj.farClip), 2.f * proj.farClip * proj.nearClip / (proj.nearClip - proj.farClip),
+  0.f,       0.f,        -1.f,                                                            0.f
   );
 }
 
