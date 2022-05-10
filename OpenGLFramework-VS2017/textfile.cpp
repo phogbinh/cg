@@ -11,7 +11,7 @@ char *textFileRead(const char *fn) {
 	int count = 0;
 
 	if (fn != NULL) {
-        fp = fopen(fn, "rt");
+        auto err = fopen_s(&fp, fn, "rt");
 
 		if (fp != NULL) {
 			fseek(fp, 0, SEEK_END);
@@ -38,7 +38,8 @@ int textFileWrite(char *fn, char *s) {
 	int status = 0;
 
 	if (fn != NULL) {
-        fp = fopen(fn, "rt");
+		auto err = fopen_s(&fp, fn, "rt");
+        
 		if (fp != NULL) {
 			if (fwrite(s, sizeof(char), strlen(s), fp) == strlen(s))
 				status = 1;
