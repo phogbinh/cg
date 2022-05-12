@@ -14,7 +14,7 @@ out vec3 interpolateNormal;
 
 void main()
 {
-	gl_Position = mvp * vec4(aPos.x, aPos.y, aPos.z, 1.0);
+  gl_Position = mvp * vec4(aPos, 1.f);
 
   interpolatePos = vec3(modelTransform * vec4(aPos, 1.f));
   interpolateColor = aColor;
