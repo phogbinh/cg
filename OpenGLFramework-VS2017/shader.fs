@@ -9,8 +9,8 @@ in vec3 interpolateNormal;
 
 out vec4 FragColor;
 
-uniform float ambientIntensity = 0.15f;
-uniform float specularIntensity = 1.f;
+uniform float lightAmbient = 0.15f;
+uniform float lightSpecular = 1.f;
 uniform float shininess = 64.f;
 
 void main() {
@@ -22,8 +22,8 @@ void main() {
   // specular
   vec3 viewDir = normalize(viewPos - interpolatePos);
   vec3 reflectDir = reflect(-lightDir, norm);
-  float specular = specularIntensity * pow(max(dot(viewDir, reflectDir), 0.f), shininess);
+  float specular = lightSpecular * pow(max(dot(viewDir, reflectDir), 0.f), shininess);
   // light
-  vec3 result = (ambientIntensity + diffuse + specular) * interpolateColor;
+  vec3 result = (lightAmbient + diffuse + specular) * interpolateColor;
   FragColor = vec4(result, 1.f);
 }
