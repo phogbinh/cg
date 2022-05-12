@@ -44,6 +44,9 @@ struct Uniform {
   GLint iLocMVP;
   GLint iLocViewPos;
   GLint iLocLightPos;
+  GLint iLocMaterialAmbient;
+  GLint iLocMaterialDiffuse;
+  GLint iLocMaterialSpecular;
 };
 Uniform uniform;
 
@@ -277,6 +280,9 @@ void RenderScene(void) {
   for (int i = 0; i < models[cur_idx].shapes.size(); i++) 
   {
     // set glViewport and draw twice ... 
+    glUniform3f(uniform.iLocMaterialAmbient,  models[cur_idx].shapes[i].material.Ka.x, models[cur_idx].shapes[i].material.Ka.y, models[cur_idx].shapes[i].material.Ka.z);
+    glUniform3f(uniform.iLocMaterialDiffuse,  models[cur_idx].shapes[i].material.Kd.x, models[cur_idx].shapes[i].material.Kd.y, models[cur_idx].shapes[i].material.Kd.z);
+    glUniform3f(uniform.iLocMaterialSpecular, models[cur_idx].shapes[i].material.Ks.x, models[cur_idx].shapes[i].material.Ks.y, models[cur_idx].shapes[i].material.Ks.z);
     glBindVertexArray(models[cur_idx].shapes[i].vao);
     glDrawArrays(GL_TRIANGLES, 0, models[cur_idx].shapes[i].vertex_count);
   }
@@ -468,6 +474,9 @@ void setShaders()
   uniform.iLocMVP = glGetUniformLocation(p, "mvp");
   uniform.iLocViewPos = glGetUniformLocation(p, "viewPos");
   uniform.iLocLightPos = glGetUniformLocation(p, "lightPos");
+  uniform.iLocMaterialAmbient  = glGetUniformLocation(p, "material.ambient");
+  uniform.iLocMaterialDiffuse  = glGetUniformLocation(p, "material.diffuse");
+  uniform.iLocMaterialSpecular = glGetUniformLocation(p, "material.specular");
 
 	if (success)
 		glUseProgram(p);
