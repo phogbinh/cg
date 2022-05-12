@@ -39,7 +39,11 @@ enum TransMode
 };
 
 struct Uniform {
+  GLint iLocModelTransform;
+  GLint iLocNormalTransform;
   GLint iLocMVP;
+  GLint iLocViewPos;
+  GLint iLocLightPos;
 };
 Uniform uniform;
 
@@ -252,14 +256,24 @@ void RenderScene(void) {
   Matrix4 S = scaling(models[cur_idx].scale);
 	// update translation, rotation and scaling
   g_translation = T; g_rotation = R; g_scaling = S;
-	Matrix4 MVP = project_matrix * view_matrix * T * R * S;
+  Matrix4 modelTransform = T * R * S;
+  Matrix4 normalTransform(modelTransform);
+  normalTransform.invert();
+  normalTransform.transpose();
+  Matrix4 MVP = project_matrix * view_matrix * modelTransform;
 	GLfloat mvp[16];
 
 	// row-major ---> column-major
   setGLMatrix(mvp, MVP);
 
+  Vector3 lightPos(1.f, 1.f, 1.f);
+
 	// use uniform to send mvp to vertex shader
+  glUniformMatrix4fv(uniform.iLocModelTransform, 1, GL_TRUE, modelTransform.get());
+  glUniformMatrix4fv(uniform.iLocNormalTransform, 1, GL_TRUE, normalTransform.get());
   glUniformMatrix4fv(uniform.iLocMVP, 1, GL_FALSE, mvp);
+  glUniform3f(uniform.iLocViewPos, main_camera.position.x, main_camera.position.y, main_camera.position.z);
+  glUniform3f(uniform.iLocLightPos, lightPos.x, lightPos.y, lightPos.z);
   for (int i = 0; i < models[cur_idx].shapes.size(); i++) 
   {
     // set glViewport and draw twice ... 
@@ -449,7 +463,11 @@ void setShaders()
 	glDeleteShader(v);
 	glDeleteShader(f);
 
-	uniform.iLocMVP = glGetUniformLocation(p, "mvp");
+  uniform.iLocModelTransform = glGetUniformLocation(p, "modelTransform");
+  uniform.iLocNormalTransform = glGetUniformLocation(p, "normalTransform");
+  uniform.iLocMVP = glGetUniformLocation(p, "mvp");
+  uniform.iLocViewPos = glGetUniformLocation(p, "viewPos");
+  uniform.iLocLightPos = glGetUniformLocation(p, "lightPos");
 
 	if (success)
 		glUseProgram(p);
