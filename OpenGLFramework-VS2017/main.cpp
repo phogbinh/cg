@@ -110,6 +110,7 @@ project_setting proj;
 
 TransMode cur_trans_mode = GeoTranslation;
 LightMode g_lightMode = Directional;
+Vector3 g_lightPos(1.f, 1.f, 1.f);
 
 Matrix4 view_matrix;
 Matrix4 project_matrix;
@@ -281,16 +282,14 @@ void RenderScene(void) {
 	// row-major ---> column-major
   setGLMatrix(mvp, MVP);
 
-  Vector3 lightPos(1.f, 1.f, 1.f);
-
 	// use uniform to send mvp to vertex shader
   glUniformMatrix4fv(uniform.iLocModelTransform, 1, GL_TRUE, modelTransform.get());
   glUniformMatrix4fv(uniform.iLocNormalTransform, 1, GL_TRUE, normalTransform.get());
   glUniformMatrix4fv(uniform.iLocMVP, 1, GL_FALSE, mvp);
   glUniform3f(uniform.iLocViewPos, main_camera.position.x, main_camera.position.y, main_camera.position.z);
   glUniform1i(uniform.iLocLightMode, (int)g_lightMode);
-  glUniform3f(uniform.iLocLightPos, lightPos.x, lightPos.y, lightPos.z);
-  glUniform3f(uniform.iLocLightDirection, -lightPos.x, -lightPos.y, -lightPos.z);
+  glUniform3f(uniform.iLocLightPos, g_lightPos.x, g_lightPos.y, g_lightPos.z);
+  glUniform3f(uniform.iLocLightDirection, -g_lightPos.x, -g_lightPos.y, -g_lightPos.z);
   glUniform1f(uniform.iLocLightAmbient, 0.15f);
   glUniform1f(uniform.iLocLightDiffuse, 1.f);
   glUniform1f(uniform.iLocLightSpecular, 1.f);
@@ -362,9 +361,18 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     return;
   }
   if (key == GLFW_KEY_L && action == GLFW_PRESS) {
-    if (g_lightMode == Directional) g_lightMode = Point;
-    else if (g_lightMode == Point) g_lightMode = Spot;
-    else g_lightMode = Directional;
+    if (g_lightMode == Directional) {
+      g_lightMode = Point;
+      g_lightPos = Vector3(0.f, 2.f, 1.f);
+    }
+    else if (g_lightMode == Point) {
+      g_lightMode = Spot;
+      g_lightPos = Vector3(0.f, 0.f, 2.f);
+    }
+    else {
+      g_lightMode = Directional;
+      g_lightPos = Vector3(1.f, 1.f, 1.f);
+    }
     return;
   }
 }
