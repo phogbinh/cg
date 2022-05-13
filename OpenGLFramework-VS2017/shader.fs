@@ -10,6 +10,8 @@ struct Light {
   float constant;
   float linear;
   float quadratic;
+  float cosineCutOff;
+  float spotExponential;
 };
 
 struct Material {
@@ -49,6 +51,16 @@ void main() {
     ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;
+  }
+  // spot
+  if (light.mode == 2) { // spot light
+    float cosineTheta = dot(lightDir, normalize(-light.direction));
+    if (cosineTheta > light.cosineCutOff) {
+      float spot = pow(max(cosineTheta, 0.f), light.spotExponential);
+      ambient  *= spot;
+      diffuse  *= spot;
+      specular *= spot;
+    }
   }
   // light
   vec3 result = (ambient + diffuse + specular) * interpolateColor; // component-wise multiplication

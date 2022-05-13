@@ -58,6 +58,8 @@ struct Uniform {
   GLint iLocLightConstant;
   GLint iLocLightLinear;
   GLint iLocLightQuadratic;
+  GLint iLocLightCosineCutOff;
+  GLint iLocLightSpotExponential;
   GLint iLocMaterialAmbient;
   GLint iLocMaterialDiffuse;
   GLint iLocMaterialSpecular;
@@ -294,8 +296,14 @@ void RenderScene(void) {
   if (g_lightMode == Directional) {
     glUniform3f(uniform.iLocLightDirection, -g_lightPos.x, -g_lightPos.y, -g_lightPos.z);
   }
-  else {
+  else if (g_lightMode == Point) {
     glUniform3f(uniform.iLocLightPos, g_lightPos.x, g_lightPos.y, g_lightPos.z);
+  }
+  else { // spot light
+    glUniform3f(uniform.iLocLightPos, g_lightPos.x, g_lightPos.y, g_lightPos.z);
+    glUniform3f(uniform.iLocLightDirection, 0.f, 0.f, -1.f);
+    glUniform1f(uniform.iLocLightCosineCutOff, cos(30.f / 180.f * M_PI));
+    glUniform1f(uniform.iLocLightSpotExponential, 50.f);
   }
   glUniform1f(uniform.iLocLightAmbient, 0.15f);
   glUniform1f(uniform.iLocLightDiffuse, 1.f);
@@ -525,6 +533,8 @@ void setShaders()
   uniform.iLocLightConstant  = glGetUniformLocation(p, "light.constant");
   uniform.iLocLightLinear    = glGetUniformLocation(p, "light.linear");
   uniform.iLocLightQuadratic = glGetUniformLocation(p, "light.quadratic");
+  uniform.iLocLightCosineCutOff    = glGetUniformLocation(p, "light.cosineCutOff");
+  uniform.iLocLightSpotExponential = glGetUniformLocation(p, "light.spotExponential");
   uniform.iLocMaterialAmbient  = glGetUniformLocation(p, "material.ambient");
   uniform.iLocMaterialDiffuse  = glGetUniformLocation(p, "material.diffuse");
   uniform.iLocMaterialSpecular = glGetUniformLocation(p, "material.specular");
