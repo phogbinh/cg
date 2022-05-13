@@ -55,6 +55,9 @@ struct Uniform {
   GLint iLocLightAmbient;
   GLint iLocLightDiffuse;
   GLint iLocLightSpecular;
+  GLint iLocLightConstant;
+  GLint iLocLightLinear;
+  GLint iLocLightQuadratic;
   GLint iLocMaterialAmbient;
   GLint iLocMaterialDiffuse;
   GLint iLocMaterialSpecular;
@@ -297,6 +300,11 @@ void RenderScene(void) {
   glUniform1f(uniform.iLocLightAmbient, 0.15f);
   glUniform1f(uniform.iLocLightDiffuse, 1.f);
   glUniform1f(uniform.iLocLightSpecular, 1.f);
+  if (g_lightMode == Point) {
+    glUniform1f(uniform.iLocLightConstant,  0.01f);
+    glUniform1f(uniform.iLocLightLinear,    0.8f);
+    glUniform1f(uniform.iLocLightQuadratic, 0.1f);
+  }
   for (int i = 0; i < models[cur_idx].shapes.size(); i++) 
   {
     // set glViewport and draw twice ... 
@@ -514,6 +522,9 @@ void setShaders()
   uniform.iLocLightAmbient   = glGetUniformLocation(p, "light.ambient");
   uniform.iLocLightDiffuse   = glGetUniformLocation(p, "light.diffuse");
   uniform.iLocLightSpecular  = glGetUniformLocation(p, "light.specular");
+  uniform.iLocLightConstant  = glGetUniformLocation(p, "light.constant");
+  uniform.iLocLightLinear    = glGetUniformLocation(p, "light.linear");
+  uniform.iLocLightQuadratic = glGetUniformLocation(p, "light.quadratic");
   uniform.iLocMaterialAmbient  = glGetUniformLocation(p, "material.ambient");
   uniform.iLocMaterialDiffuse  = glGetUniformLocation(p, "material.diffuse");
   uniform.iLocMaterialSpecular = glGetUniformLocation(p, "material.specular");

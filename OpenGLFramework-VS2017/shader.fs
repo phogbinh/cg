@@ -7,6 +7,9 @@ struct Light {
   float ambient;
   float diffuse;
   float specular;
+  float constant;
+  float linear;
+  float quadratic;
 };
 
 struct Material {
@@ -39,6 +42,14 @@ void main() {
   vec3 viewDir = normalize(viewPos - interpolatePos);
   vec3 reflectDir = reflect(-lightDir, norm);
   vec3 specular = pow(max(dot(viewDir, reflectDir), 0.f), shininess) * light.specular * material.specular;
+  // attenuation
+  if (light.mode == 1) { // point light
+    float distance = length(light.position - interpolatePos);
+    float attenuation = 1.f / (light.constant + light.linear * distance + light.quadratic * distance * distance);
+    ambient  *= attenuation;
+    diffuse  *= attenuation;
+    specular *= attenuation;
+  }
   // light
   vec3 result = (ambient + diffuse + specular) * interpolateColor; // component-wise multiplication
   FragColor = vec4(result, 1.f);
