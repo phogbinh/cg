@@ -481,11 +481,11 @@ void setShaders()
   uniform.iLocNormalTransform = glGetUniformLocation(p, "normalTransform");
   uniform.iLocMVP = glGetUniformLocation(p, "mvp");
   uniform.iLocViewPos = glGetUniformLocation(p, "viewPos");
-  uniform.iLocLightPos      = glGetUniformLocation(p, "light.position");
+  uniform.iLocLightPos       = glGetUniformLocation(p, "light.position");
   uniform.iLocLightDirection = glGetUniformLocation(p, "light.direction");
-  uniform.iLocLightAmbient  = glGetUniformLocation(p, "light.ambient");
-  uniform.iLocLightDiffuse  = glGetUniformLocation(p, "light.diffuse");
-  uniform.iLocLightSpecular = glGetUniformLocation(p, "light.specular");
+  uniform.iLocLightAmbient   = glGetUniformLocation(p, "light.ambient");
+  uniform.iLocLightDiffuse   = glGetUniformLocation(p, "light.diffuse");
+  uniform.iLocLightSpecular  = glGetUniformLocation(p, "light.specular");
   uniform.iLocMaterialAmbient  = glGetUniformLocation(p, "material.ambient");
   uniform.iLocMaterialDiffuse  = glGetUniformLocation(p, "material.diffuse");
   uniform.iLocMaterialSpecular = glGetUniformLocation(p, "material.specular");
