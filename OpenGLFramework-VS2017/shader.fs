@@ -1,6 +1,7 @@
 #version 330 core
 
 struct Light {
+  int mode;
   vec3 position;
   vec3 direction;
   float ambient;

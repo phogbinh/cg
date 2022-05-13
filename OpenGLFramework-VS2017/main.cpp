@@ -38,11 +38,18 @@ enum TransMode
 	ShininessEdit = 4,
 };
 
+enum LightMode {
+  Directional = 0,
+  Point,
+  Spot
+};
+
 struct Uniform {
   GLint iLocModelTransform;
   GLint iLocNormalTransform;
   GLint iLocMVP;
   GLint iLocViewPos;
+  GLint iLocLightMode;
   GLint iLocLightPos;
   GLint iLocLightDirection;
   GLint iLocLightAmbient;
@@ -102,6 +109,7 @@ struct project_setting
 project_setting proj;
 
 TransMode cur_trans_mode = GeoTranslation;
+LightMode g_lightMode = Directional;
 
 Matrix4 view_matrix;
 Matrix4 project_matrix;
@@ -280,6 +288,7 @@ void RenderScene(void) {
   glUniformMatrix4fv(uniform.iLocNormalTransform, 1, GL_TRUE, normalTransform.get());
   glUniformMatrix4fv(uniform.iLocMVP, 1, GL_FALSE, mvp);
   glUniform3f(uniform.iLocViewPos, main_camera.position.x, main_camera.position.y, main_camera.position.z);
+  glUniform1i(uniform.iLocLightMode, (int)g_lightMode);
   glUniform3f(uniform.iLocLightPos, lightPos.x, lightPos.y, lightPos.z);
   glUniform3f(uniform.iLocLightDirection, -lightPos.x, -lightPos.y, -lightPos.z);
   glUniform1f(uniform.iLocLightAmbient, 0.15f);
@@ -350,6 +359,12 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     cout << g_rotation << endl;
     printf("Scaling Matrix:\n");
     cout << g_scaling << endl;
+    return;
+  }
+  if (key == GLFW_KEY_L && action == GLFW_PRESS) {
+    if (g_lightMode == Directional) g_lightMode = Point;
+    else if (g_lightMode == Point) g_lightMode = Spot;
+    else g_lightMode = Directional;
     return;
   }
 }
@@ -481,6 +496,7 @@ void setShaders()
   uniform.iLocNormalTransform = glGetUniformLocation(p, "normalTransform");
   uniform.iLocMVP = glGetUniformLocation(p, "mvp");
   uniform.iLocViewPos = glGetUniformLocation(p, "viewPos");
+  uniform.iLocLightMode      = glGetUniformLocation(p, "light.mode");
   uniform.iLocLightPos       = glGetUniformLocation(p, "light.position");
   uniform.iLocLightDirection = glGetUniformLocation(p, "light.direction");
   uniform.iLocLightAmbient   = glGetUniformLocation(p, "light.ambient");
