@@ -55,12 +55,13 @@ void main() {
   // spot
   if (light.mode == 2) { // spot light
     float cosineTheta = dot(lightDir, normalize(-light.direction));
+    float spot = 0.f;
     if (cosineTheta > light.cosineCutOff) {
-      float spot = pow(max(cosineTheta, 0.f), light.spotExponential);
-      ambient  *= spot;
-      diffuse  *= spot;
-      specular *= spot;
+      spot = pow(max(cosineTheta, 0.f), light.spotExponential);
     }
+    ambient  *= spot;
+    diffuse  *= spot;
+    specular *= spot;
   }
   // light
   vec3 result = (ambient + diffuse + specular) * interpolateColor; // component-wise multiplication
