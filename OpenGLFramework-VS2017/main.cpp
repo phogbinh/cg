@@ -44,6 +44,7 @@ struct Uniform {
   GLint iLocMVP;
   GLint iLocViewPos;
   GLint iLocLightPos;
+  GLint iLocLightDirection;
   GLint iLocLightAmbient;
   GLint iLocLightDiffuse;
   GLint iLocLightSpecular;
@@ -280,6 +281,7 @@ void RenderScene(void) {
   glUniformMatrix4fv(uniform.iLocMVP, 1, GL_FALSE, mvp);
   glUniform3f(uniform.iLocViewPos, main_camera.position.x, main_camera.position.y, main_camera.position.z);
   glUniform3f(uniform.iLocLightPos, lightPos.x, lightPos.y, lightPos.z);
+  glUniform3f(uniform.iLocLightDirection, -lightPos.x, -lightPos.y, -lightPos.z);
   glUniform1f(uniform.iLocLightAmbient, 0.15f);
   glUniform1f(uniform.iLocLightDiffuse, 1.f);
   glUniform1f(uniform.iLocLightSpecular, 1.f);
@@ -480,6 +482,7 @@ void setShaders()
   uniform.iLocMVP = glGetUniformLocation(p, "mvp");
   uniform.iLocViewPos = glGetUniformLocation(p, "viewPos");
   uniform.iLocLightPos      = glGetUniformLocation(p, "light.position");
+  uniform.iLocLightDirection = glGetUniformLocation(p, "light.direction");
   uniform.iLocLightAmbient  = glGetUniformLocation(p, "light.ambient");
   uniform.iLocLightDiffuse  = glGetUniformLocation(p, "light.diffuse");
   uniform.iLocLightSpecular = glGetUniformLocation(p, "light.specular");

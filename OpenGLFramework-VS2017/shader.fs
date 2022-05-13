@@ -2,6 +2,7 @@
 
 struct Light {
   vec3 position;
+  vec3 direction;
   float ambient;
   float diffuse;
   float specular;
@@ -31,7 +32,8 @@ void main() {
   vec3 ambient = light.ambient * material.ambient;
   // diffuse
   vec3 norm = normalize(interpolateNormal); // TODO interpolation may de-normalize pixel's normal vector?!
-  vec3 lightDir = normalize(light.position - interpolatePos);
+  // vec3 lightDir = normalize(light.position - interpolatePos);
+  vec3 lightDir = normalize(-light.direction);
   vec3 diffuse = max(dot(norm, lightDir), 0.f) * light.diffuse * material.diffuse;
   // specular
   vec3 viewDir = normalize(viewPos - interpolatePos);
