@@ -45,7 +45,7 @@ void main() {
   vec3 reflectDir = reflect(-lightDir, norm);
   vec3 specular = pow(max(dot(viewDir, reflectDir), 0.f), shininess) * light.specular * material.specular;
   // attenuation
-  if (light.mode == 1) { // point light
+  if (light.mode == 1 || light.mode == 2) { // point light or spot light
     float distance = length(light.position - interpolatePos);
     float attenuation = 1.f / (light.constant + light.linear * distance + light.quadratic * distance * distance);
     ambient  *= attenuation;

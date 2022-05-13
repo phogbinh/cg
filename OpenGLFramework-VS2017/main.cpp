@@ -313,6 +313,11 @@ void RenderScene(void) {
     glUniform1f(uniform.iLocLightLinear,    0.8f);
     glUniform1f(uniform.iLocLightQuadratic, 0.1f);
   }
+  else if (g_lightMode == Spot) {
+    glUniform1f(uniform.iLocLightConstant,  0.05f);
+    glUniform1f(uniform.iLocLightLinear,    0.3f);
+    glUniform1f(uniform.iLocLightQuadratic, 0.6f);
+  }
   for (int i = 0; i < models[cur_idx].shapes.size(); i++) 
   {
     // set glViewport and draw twice ... 
