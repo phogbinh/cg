@@ -21,8 +21,8 @@
 using namespace std;
 
 // Default window size
-const int WINDOW_WIDTH = 800;
-const int WINDOW_HEIGHT = 800;
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 800
 const float PLANE_Y = -0.9f;
 
 bool mouse_pressed = false;
