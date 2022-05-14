@@ -116,7 +116,7 @@ struct project_setting
 };
 project_setting proj;
 
-GLuint p;
+GLuint phongShading;
 TransMode cur_trans_mode = GeoTranslation;
 LightMode g_lightMode = Directional;
 Vector3 g_lightPos(1.f, 1.f, 1.f);
@@ -340,7 +340,7 @@ void RenderScene(void) {
   // row-major ---> column-major
   setGLMatrix(mvp, MVP);
 
-  glUseProgram(p);
+  glUseProgram(phongShading);
   draw(modelTransform, normalTransform, mvp, g_windowWidth / 2, 0);
 }
 
@@ -837,7 +837,7 @@ void initParameter()
 void setupRC()
 {
   // setup shaders
-  setShaders(p);
+  setShaders(phongShading);
   initParameter();
 
   // OpenGL States and Values
