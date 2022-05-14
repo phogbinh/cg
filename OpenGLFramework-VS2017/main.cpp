@@ -116,6 +116,7 @@ project_setting proj;
 TransMode cur_trans_mode = GeoTranslation;
 LightMode g_lightMode = Directional;
 Vector3 g_lightPos(1.f, 1.f, 1.f);
+float g_lightDiffuse = 1.f;
 
 Matrix4 view_matrix;
 Matrix4 project_matrix;
@@ -306,7 +307,7 @@ void RenderScene(void) {
     glUniform1f(uniform.iLocLightSpotExponential, 50.f);
   }
   glUniform1f(uniform.iLocLightAmbient, 0.15f);
-  glUniform1f(uniform.iLocLightDiffuse, 1.f);
+  glUniform1f(uniform.iLocLightDiffuse, g_lightDiffuse);
   glUniform1f(uniform.iLocLightSpecular, 1.f);
   if (g_lightMode == Point) {
     glUniform1f(uniform.iLocLightConstant,  0.01f);
