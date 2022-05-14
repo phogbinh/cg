@@ -271,26 +271,7 @@ void ChangeSize(GLFWwindow* window, int width, int height)
   setPerspective();
 }
 
-// Render function for display rendering
-void RenderScene(void) {  
-  // clear canvas
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-  Matrix4 T = translate(models[cur_idx].position);
-  Matrix4 R = rotate(models[cur_idx].rotation);
-  Matrix4 S = scaling(models[cur_idx].scale);
-  // update translation, rotation and scaling
-  g_translation = T; g_rotation = R; g_scaling = S;
-  Matrix4 modelTransform = T * R * S;
-  Matrix4 normalTransform(modelTransform);
-  normalTransform.invert();
-  normalTransform.transpose();
-  Matrix4 MVP = project_matrix * view_matrix * modelTransform;
-  GLfloat mvp[16];
-
-  // row-major ---> column-major
-  setGLMatrix(mvp, MVP);
-
+void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[]) {
   // use uniform to send mvp to vertex shader
   glUniformMatrix4fv(uniform.iLocModelTransform, 1, GL_TRUE, modelTransform.get());
   glUniformMatrix4fv(uniform.iLocNormalTransform, 1, GL_TRUE, normalTransform.get());
@@ -332,6 +313,29 @@ void RenderScene(void) {
     glBindVertexArray(models[cur_idx].shapes[i].vao);
     glDrawArrays(GL_TRIANGLES, 0, models[cur_idx].shapes[i].vertex_count);
   }
+}
+
+// Render function for display rendering
+void RenderScene(void) {  
+  // clear canvas
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+  Matrix4 T = translate(models[cur_idx].position);
+  Matrix4 R = rotate(models[cur_idx].rotation);
+  Matrix4 S = scaling(models[cur_idx].scale);
+  // update translation, rotation and scaling
+  g_translation = T; g_rotation = R; g_scaling = S;
+  Matrix4 modelTransform = T * R * S;
+  Matrix4 normalTransform(modelTransform);
+  normalTransform.invert();
+  normalTransform.transpose();
+  Matrix4 MVP = project_matrix * view_matrix * modelTransform;
+  GLfloat mvp[16];
+
+  // row-major ---> column-major
+  setGLMatrix(mvp, MVP);
+
+  draw(modelTransform, normalTransform, mvp);
 }
 
 
