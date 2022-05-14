@@ -267,7 +267,6 @@ GLuint VAO, VBO;
 // Call back function for window reshape
 void ChangeSize(GLFWwindow* window, int width, int height)
 {
-  glViewport(0, 0, width, height);
   // change your aspect ratio
   g_windowWidth = width;
   g_windowHeight = height;
@@ -275,7 +274,7 @@ void ChangeSize(GLFWwindow* window, int width, int height)
   setPerspective();
 }
 
-void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[]) {
+void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[], int x, int y) {
   // use uniform to send mvp to vertex shader
   glUniformMatrix4fv(uniform.iLocModelTransform, 1, GL_TRUE, modelTransform.get());
   glUniformMatrix4fv(uniform.iLocNormalTransform, 1, GL_TRUE, normalTransform.get());
@@ -315,6 +314,7 @@ void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[]) {
     glUniform3f(uniform.iLocMaterialDiffuse,  models[cur_idx].shapes[i].material.Kd.x, models[cur_idx].shapes[i].material.Kd.y, models[cur_idx].shapes[i].material.Kd.z);
     glUniform3f(uniform.iLocMaterialSpecular, models[cur_idx].shapes[i].material.Ks.x, models[cur_idx].shapes[i].material.Ks.y, models[cur_idx].shapes[i].material.Ks.z);
     glBindVertexArray(models[cur_idx].shapes[i].vao);
+    glViewport(x, y, g_windowWidth, g_windowHeight);
     glDrawArrays(GL_TRIANGLES, 0, models[cur_idx].shapes[i].vertex_count);
   }
 }
@@ -339,7 +339,7 @@ void RenderScene(void) {
   // row-major ---> column-major
   setGLMatrix(mvp, MVP);
 
-  draw(modelTransform, normalTransform, mvp);
+  draw(modelTransform, normalTransform, mvp, 0, 0);
 }
 
 
