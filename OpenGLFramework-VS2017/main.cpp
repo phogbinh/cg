@@ -402,6 +402,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     return;
   }
+  if (key == GLFW_KEY_K && action == GLFW_PRESS) {
+    cur_trans_mode = LightEdit;
+    return;
+  }
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -460,6 +464,10 @@ static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
   else if (cur_trans_mode == GeoRotation) {
     models[cur_idx].rotation.x += yoffset / 200.f;
     models[cur_idx].rotation.y -= xoffset / 200.f;
+  }
+  else if (cur_trans_mode == LightEdit) {
+    g_lightPos.x += xoffset / 200.f;
+    g_lightPos.y += yoffset / 200.f;
   }
   else {
     // intentionally empty
