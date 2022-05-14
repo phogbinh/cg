@@ -116,6 +116,7 @@ struct project_setting
 };
 project_setting proj;
 
+GLuint p;
 TransMode cur_trans_mode = GeoTranslation;
 LightMode g_lightMode = Directional;
 Vector3 g_lightPos(1.f, 1.f, 1.f);
@@ -339,6 +340,7 @@ void RenderScene(void) {
   // row-major ---> column-major
   setGLMatrix(mvp, MVP);
 
+  glUseProgram(p);
   draw(modelTransform, normalTransform, mvp, g_windowWidth / 2, 0);
 }
 
@@ -509,7 +511,7 @@ static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 
 void setShaders()
 {
-  GLuint v, f, p;
+  GLuint v, f;
   char *vs = NULL;
   char *fs = NULL;
 
@@ -586,13 +588,10 @@ void setShaders()
   uniform.iLocMaterialDiffuse  = glGetUniformLocation(p, "material.diffuse");
   uniform.iLocMaterialSpecular = glGetUniformLocation(p, "material.specular");
 
-  if (success)
-    glUseProgram(p);
-    else
-    {
-        system("pause");
-        exit(123);
-    }
+  if (!success) {
+    system("pause");
+    exit(123);
+  }
 }
 
 void normalization(tinyobj::attrib_t* attrib, vector<GLfloat>& vertices, vector<GLfloat>& colors, vector<GLfloat>& normals, tinyobj::shape_t* shape)
