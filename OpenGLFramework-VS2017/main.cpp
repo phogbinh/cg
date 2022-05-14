@@ -512,7 +512,7 @@ static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
   starting_press_y = y;
 }
 
-void setShaders(GLuint& p)
+void setShaders(GLuint& p, const char* vertexShaderFilename, const char* fragmentShaderFilename)
 {
   GLuint v, f;
   char *vs = NULL;
@@ -521,8 +521,8 @@ void setShaders(GLuint& p)
   v = glCreateShader(GL_VERTEX_SHADER);
   f = glCreateShader(GL_FRAGMENT_SHADER);
 
-  vs = textFileRead("shader.vs");
-  fs = textFileRead("shader.fs");
+  vs = textFileRead(vertexShaderFilename);
+  fs = textFileRead(fragmentShaderFilename);
 
   glShaderSource(v, 1, (const GLchar**)&vs, NULL);
   glShaderSource(f, 1, (const GLchar**)&fs, NULL);
@@ -840,8 +840,8 @@ void initParameter()
 void setupRC()
 {
   // setup shaders
-  setShaders(gouraudShading);
-  setShaders(phongShading);
+  setShaders(gouraudShading, "gouraud.vs", "gouraud.fs");
+  setShaders(phongShading,   "shader.vs",  "shader.fs" );
   initParameter();
 
   // OpenGL States and Values
