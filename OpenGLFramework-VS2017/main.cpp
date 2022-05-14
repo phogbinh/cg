@@ -423,6 +423,18 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     models[cur_idx].rotation.z += yoffset / 5.f;
     return;
   }
+  if (cur_trans_mode == LightEdit) {
+    if (g_lightMode == Directional) {
+      g_lightDiffuse += yoffset / 5.f;
+    }
+    else if (g_lightMode == Point) {
+      g_lightDiffuse += yoffset / 5.f;
+    }
+    else { // spot light
+      g_lightCutOffDegree += yoffset;
+    }
+    return;
+  }
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
