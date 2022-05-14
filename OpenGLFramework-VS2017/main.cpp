@@ -25,6 +25,8 @@ using namespace std;
 #define WINDOW_HEIGHT 800
 const float PLANE_Y = -0.9f;
 
+int g_windowWidth = WINDOW_WIDTH;
+int g_windowHeight = WINDOW_HEIGHT;
 bool mouse_pressed = false;
 int starting_press_x = -1;
 int starting_press_y = -1;
@@ -267,7 +269,9 @@ void ChangeSize(GLFWwindow* window, int width, int height)
 {
   glViewport(0, 0, width, height);
   // change your aspect ratio
-  proj.aspect = (float)width / (float)height;
+  g_windowWidth = width;
+  g_windowHeight = height;
+  proj.aspect = (float)g_windowWidth / (float)g_windowHeight;
   setPerspective();
 }
 
@@ -821,7 +825,7 @@ void initParameter()
   proj.nearClip = 0.001;
   proj.farClip = 100.0;
   proj.fovy = 80; // degree
-  proj.aspect = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
+  proj.aspect = (float)g_windowWidth / (float)g_windowHeight;
 
   main_camera.position = Vector3(0.0f, 0.0f, 2.0f);
   main_camera.center = Vector3(0.0f, 0.0f, 0.0f);
