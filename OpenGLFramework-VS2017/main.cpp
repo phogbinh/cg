@@ -116,6 +116,7 @@ struct project_setting
 };
 project_setting proj;
 
+GLuint gouraudShading;
 GLuint phongShading;
 TransMode cur_trans_mode = GeoTranslation;
 LightMode g_lightMode = Directional;
@@ -340,6 +341,8 @@ void RenderScene(void) {
   // row-major ---> column-major
   setGLMatrix(mvp, MVP);
 
+  glUseProgram(gouraudShading);
+  draw(modelTransform, normalTransform, mvp, 0, 0);
   glUseProgram(phongShading);
   draw(modelTransform, normalTransform, mvp, g_windowWidth / 2, 0);
 }
@@ -837,6 +840,7 @@ void initParameter()
 void setupRC()
 {
   // setup shaders
+  setShaders(gouraudShading);
   setShaders(phongShading);
   initParameter();
 
