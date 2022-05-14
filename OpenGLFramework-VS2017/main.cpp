@@ -509,7 +509,7 @@ static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
   starting_press_y = y;
 }
 
-void setShaders()
+void setShaders(GLuint& p)
 {
   GLuint v, f;
   char *vs = NULL;
@@ -837,7 +837,7 @@ void initParameter()
 void setupRC()
 {
   // setup shaders
-  setShaders();
+  setShaders(p);
   initParameter();
 
   // OpenGL States and Values
