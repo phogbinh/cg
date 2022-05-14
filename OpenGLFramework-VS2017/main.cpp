@@ -55,6 +55,7 @@ struct Uniform {
   GLint iLocLightAmbient;
   GLint iLocLightDiffuse;
   GLint iLocLightSpecular;
+  GLint iLocLightShininess;
   GLint iLocLightConstant;
   GLint iLocLightLinear;
   GLint iLocLightQuadratic;
@@ -117,6 +118,7 @@ TransMode cur_trans_mode = GeoTranslation;
 LightMode g_lightMode = Directional;
 Vector3 g_lightPos(1.f, 1.f, 1.f);
 float g_lightDiffuse = 1.f;
+float g_lightShininess = 64.f;
 float g_lightCutOffDegree = 30.f;
 
 Matrix4 view_matrix;
@@ -310,6 +312,7 @@ void RenderScene(void) {
   glUniform1f(uniform.iLocLightAmbient, 0.15f);
   glUniform1f(uniform.iLocLightDiffuse, g_lightDiffuse);
   glUniform1f(uniform.iLocLightSpecular, 1.f);
+  glUniform1f(uniform.iLocLightShininess, g_lightShininess);
   if (g_lightMode == Point) {
     glUniform1f(uniform.iLocLightConstant,  0.01f);
     glUniform1f(uniform.iLocLightLinear,    0.8f);
@@ -557,6 +560,7 @@ void setShaders()
   uniform.iLocLightAmbient   = glGetUniformLocation(p, "light.ambient");
   uniform.iLocLightDiffuse   = glGetUniformLocation(p, "light.diffuse");
   uniform.iLocLightSpecular  = glGetUniformLocation(p, "light.specular");
+  uniform.iLocLightShininess = glGetUniformLocation(p, "light.shininess");
   uniform.iLocLightConstant  = glGetUniformLocation(p, "light.constant");
   uniform.iLocLightLinear    = glGetUniformLocation(p, "light.linear");
   uniform.iLocLightQuadratic = glGetUniformLocation(p, "light.quadratic");

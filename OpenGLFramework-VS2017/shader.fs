@@ -7,6 +7,7 @@ struct Light {
   float ambient;
   float diffuse;
   float specular;
+  float shininess;
   float constant;
   float linear;
   float quadratic;
@@ -30,8 +31,6 @@ in vec3 interpolateNormal;
 
 out vec4 FragColor;
 
-uniform float shininess = 64.f;
-
 void main() {
   // TODO light color
   // ambient
@@ -43,7 +42,7 @@ void main() {
   // specular
   vec3 viewDir = normalize(viewPos - interpolatePos);
   vec3 reflectDir = reflect(-lightDir, norm);
-  vec3 specular = pow(max(dot(viewDir, reflectDir), 0.f), shininess) * light.specular * material.specular;
+  vec3 specular = pow(max(dot(viewDir, reflectDir), 0.f), light.shininess) * light.specular * material.specular;
   // attenuation
   if (light.mode == 1 || light.mode == 2) { // point light or spot light
     float distance = length(light.position - interpolatePos);
