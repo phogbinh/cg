@@ -140,6 +140,8 @@
     <ClCompile Include="textfile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="gouraud.fs" />
+    <None Include="gouraud.vs" />
     <None Include="shader.fs" />
     <None Include="shader.vs" />
   </ItemGroup>

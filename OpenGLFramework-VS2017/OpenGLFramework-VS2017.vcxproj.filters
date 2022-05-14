@@ -31,6 +31,8 @@
   <ItemGroup>
     <None Include="shader.fs" />
     <None Include="shader.vs" />
+    <None Include="gouraud.fs" />
+    <None Include="gouraud.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="textfile.h">
