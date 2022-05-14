@@ -409,6 +409,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     cur_trans_mode = LightEdit;
     return;
   }
+  if (key == GLFW_KEY_J && action == GLFW_PRESS) {
+    cur_trans_mode = ShininessEdit;
+    return;
+  }
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -436,6 +440,10 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     else { // spot light
       g_lightCutOffDegree += yoffset;
     }
+    return;
+  }
+  if (cur_trans_mode == ShininessEdit) {
+    g_lightShininess += yoffset;
     return;
   }
 }
