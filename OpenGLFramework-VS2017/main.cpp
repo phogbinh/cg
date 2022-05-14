@@ -117,6 +117,7 @@ TransMode cur_trans_mode = GeoTranslation;
 LightMode g_lightMode = Directional;
 Vector3 g_lightPos(1.f, 1.f, 1.f);
 float g_lightDiffuse = 1.f;
+float g_lightCutOffDegree = 30.f;
 
 Matrix4 view_matrix;
 Matrix4 project_matrix;
@@ -303,7 +304,7 @@ void RenderScene(void) {
   else { // spot light
     glUniform3f(uniform.iLocLightPos, g_lightPos.x, g_lightPos.y, g_lightPos.z);
     glUniform3f(uniform.iLocLightDirection, 0.f, 0.f, -1.f);
-    glUniform1f(uniform.iLocLightCosineCutOff, cos(30.f / 180.f * M_PI));
+    glUniform1f(uniform.iLocLightCosineCutOff, cos(g_lightCutOffDegree / 180.f * M_PI));
     glUniform1f(uniform.iLocLightSpotExponential, 50.f);
   }
   glUniform1f(uniform.iLocLightAmbient, 0.15f);
