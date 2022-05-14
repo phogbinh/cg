@@ -270,7 +270,7 @@ void ChangeSize(GLFWwindow* window, int width, int height)
   // change your aspect ratio
   g_windowWidth = width;
   g_windowHeight = height;
-  proj.aspect = (float)g_windowWidth / (float)g_windowHeight;
+  proj.aspect = (float)g_windowWidth / 2.f / (float)g_windowHeight;
   setPerspective();
 }
 
@@ -314,7 +314,7 @@ void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[], int 
     glUniform3f(uniform.iLocMaterialDiffuse,  models[cur_idx].shapes[i].material.Kd.x, models[cur_idx].shapes[i].material.Kd.y, models[cur_idx].shapes[i].material.Kd.z);
     glUniform3f(uniform.iLocMaterialSpecular, models[cur_idx].shapes[i].material.Ks.x, models[cur_idx].shapes[i].material.Ks.y, models[cur_idx].shapes[i].material.Ks.z);
     glBindVertexArray(models[cur_idx].shapes[i].vao);
-    glViewport(x, y, g_windowWidth, g_windowHeight);
+    glViewport(x, y, g_windowWidth / 2, g_windowHeight);
     glDrawArrays(GL_TRIANGLES, 0, models[cur_idx].shapes[i].vertex_count);
   }
 }
@@ -339,7 +339,7 @@ void RenderScene(void) {
   // row-major ---> column-major
   setGLMatrix(mvp, MVP);
 
-  draw(modelTransform, normalTransform, mvp, 0, 0);
+  draw(modelTransform, normalTransform, mvp, g_windowWidth / 2, 0);
 }
 
 
@@ -825,7 +825,7 @@ void initParameter()
   proj.nearClip = 0.001;
   proj.farClip = 100.0;
   proj.fovy = 80; // degree
-  proj.aspect = (float)g_windowWidth / (float)g_windowHeight;
+  proj.aspect = (float)g_windowWidth / 2.f / (float)g_windowHeight;
 
   main_camera.position = Vector3(0.0f, 0.0f, 2.0f);
   main_camera.center = Vector3(0.0f, 0.0f, 0.0f);
