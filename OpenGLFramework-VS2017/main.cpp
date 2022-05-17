@@ -71,8 +71,6 @@ struct Uniform {
 };
 Uniform uniform;
 
-vector<string> filenames; // .obj filename list
-
 struct PhongMaterial {
   Vector3 Ka;
   Vector3 Kd;
@@ -264,9 +262,6 @@ void setGLMatrix(GLfloat* glm, Matrix4& m) {
   glm[2] = m[8];  glm[6] = m[9];  glm[10] = m[10]; glm[14] = m[11];
   glm[3] = m[12]; glm[7] = m[13]; glm[11] = m[14]; glm[15] = m[15];
 }
-
-// Vertex buffers
-GLuint VAO, VBO;
 
 // Call back function for window reshape
 void ChangeSize(GLFWwindow* window, int width, int height)
