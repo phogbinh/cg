@@ -18,6 +18,8 @@
 # define min(a,b) (((a)<(b))?(a):(b))
 #endif
 
+#define degToRad(theta) (theta / 180.f * M_PI)
+
 using namespace std;
 
 // Default window size
@@ -244,7 +246,7 @@ void setViewingMatrix()
 // compute persepective projection matrix
 void setPerspective()
 {
-  float radian = proj.fovy / 180.f * M_PI;
+  float radian = degToRad(proj.fovy);
   float angle = cos(radian / 2.f) / sin(radian / 2.f);
   float firstDiag  = proj.aspect >= 1.f ? angle / proj.aspect : angle;
   float secondDiag = proj.aspect >= 1.f ? angle               : angle * proj.aspect;
@@ -292,7 +294,7 @@ void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[], int 
   else { // spot light
     glUniform3f(uniform.iLocLightPos, g_lightPos.x, g_lightPos.y, g_lightPos.z);
     glUniform3f(uniform.iLocLightDirection, 0.f, 0.f, -1.f);
-    glUniform1f(uniform.iLocLightCosineCutOff, cos(g_lightCutOffDegree / 180.f * M_PI));
+    glUniform1f(uniform.iLocLightCosineCutOff, cos(degToRad(g_lightCutOffDegree)));
     glUniform1f(uniform.iLocLightSpotExponential, 50.f);
   }
   glUniform1f(uniform.iLocLightAmbient, 0.15f);
