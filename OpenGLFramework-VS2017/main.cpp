@@ -814,7 +814,7 @@ void LoadModels(string model_path)
 
 void initParameter()
 {
-  // [TODO] Setup some parameters if you need
+  // Setup some parameters if you need
   proj.left = -1;
   proj.right = 1;
   proj.top = 1;
