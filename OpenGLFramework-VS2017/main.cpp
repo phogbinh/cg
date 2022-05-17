@@ -341,6 +341,8 @@ void RenderScene(void) {
   // row-major ---> column-major
   setGLMatrix(mvp, MVP);
 
+  if (g_isWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glUseProgram(gouraudShading);
   draw(modelTransform, normalTransform, mvp, 0, 0);
   glUseProgram(phongShading);
