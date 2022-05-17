@@ -377,10 +377,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     return;
   }
-  if (key == GLFW_KEY_P && action == GLFW_PRESS) {
-    setPerspective();
-    return;
-  }
   if (key == GLFW_KEY_T && action == GLFW_PRESS) {
     cur_trans_mode = GeoTranslation;
     return;
