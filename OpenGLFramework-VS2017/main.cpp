@@ -138,6 +138,7 @@ Matrix4 project_matrix;
 
 int cur_idx = 0; // represent which model should be rendered now
 bool g_isWireframe = false;
+bool g_isMagnificationNearest = true;
 Matrix4 g_translation;
 Matrix4 g_rotation;
 Matrix4 g_scaling;
@@ -330,6 +331,8 @@ void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[], int 
     }
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, models[cur_idx].shapes[i].material.diffuseTexture);
+    if (g_isMagnificationNearest) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    else glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindVertexArray(models[cur_idx].shapes[i].vao);
     // [TODO] Bind texture and modify texture filtering & wrapping mode
     // glTexParameteri
@@ -442,6 +445,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
   }
   if (key == GLFW_KEY_J && action == GLFW_PRESS) {
     cur_trans_mode = ShininessEdit;
+    return;
+  }
+  if (key == GLFW_KEY_G && action == GLFW_PRESS) {
+    g_isMagnificationNearest ^= 1;
     return;
   }
 }
