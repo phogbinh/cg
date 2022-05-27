@@ -24,7 +24,6 @@ struct Material {
 uniform mat4 modelTransform;
 uniform mat4 normalTransform;
 uniform mat4 mvp;
-// [TODO] passing uniform variable for texture coordinate offset
 uniform vec3 viewPos;
 uniform Light light;
 uniform Material material;
