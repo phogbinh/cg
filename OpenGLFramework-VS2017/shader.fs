@@ -24,10 +24,13 @@ struct Material {
 uniform vec3 viewPos;
 uniform Light light;
 uniform Material material;
+// [TODO] passing texture from main.cpp
+// Hint: sampler2D
 
 in vec3 interpolatePos;
 in vec3 interpolateColor;
 in vec3 interpolateNormal;
+in vec2 interpolateTexCoord;
 
 out vec4 FragColor;
 
@@ -64,5 +67,7 @@ void main() {
   }
   // light
   vec3 result = (ambient + diffuse + specular) * interpolateColor; // component-wise multiplication
-  FragColor = vec4(result, 1.f);
+  // [TODO] sampling from texture
+  // Hint: texture
+  FragColor = vec4(interpolateTexCoord, 0.f, 1.f);
 }
