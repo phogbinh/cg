@@ -334,7 +334,7 @@ void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[], int 
     glBindTexture(GL_TEXTURE_2D, models[cur_idx].shapes[i].material.diffuseTexture);
     if (g_isMagnificationNearest) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     else glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    if (g_isMinificationNearest) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    if (g_isMinificationNearest) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     else glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glBindVertexArray(models[cur_idx].shapes[i].vao);
     glViewport(x, y, g_windowWidth / 2, g_windowHeight);
