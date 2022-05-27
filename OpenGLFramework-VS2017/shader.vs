@@ -3,14 +3,17 @@
 uniform mat4 modelTransform;
 uniform mat4 normalTransform;
 uniform mat4 mvp;
+// [TODO] passing uniform variable for texture coordinate offset
 
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec3 aNormal;
+layout (location = 3) in vec2 aTexCoord;
 
 out vec3 interpolatePos;
 out vec3 interpolateColor;
 out vec3 interpolateNormal;
+out vec2 interpolateTexCoord;
 
 void main()
 {
@@ -19,5 +22,6 @@ void main()
   interpolatePos = vec3(modelTransform * vec4(aPos, 1.f));
   interpolateColor = aColor;
   interpolateNormal = mat3(normalTransform) * aNormal;
+  interpolateTexCoord = aTexCoord;
 }
 

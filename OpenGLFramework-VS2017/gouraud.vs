@@ -24,6 +24,7 @@ struct Material {
 uniform mat4 modelTransform;
 uniform mat4 normalTransform;
 uniform mat4 mvp;
+// [TODO] passing uniform variable for texture coordinate offset
 uniform vec3 viewPos;
 uniform Light light;
 uniform Material material;
@@ -31,8 +32,10 @@ uniform Material material;
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec3 aNormal;
+layout (location = 3) in vec2 aTexCoord;
 
 out vec3 interpolateColor;
+out vec2 interpolateTexCoord;
 
 void main()
 {
@@ -72,5 +75,6 @@ void main()
   }
   // light
   interpolateColor = (ambient + diffuse + specular) * aColor; // component-wise multiplication
+  interpolateTexCoord = aTexCoord;
 }
 
