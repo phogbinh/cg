@@ -330,6 +330,7 @@ void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[], int 
     else {
       glUniform2f(uniform.iLocEyeOffset, 0.f, 0.f);
     }
+    // Bind texture and modify texture filtering & wrapping mode
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, models[cur_idx].shapes[i].material.diffuseTexture);
     if (g_isMagnificationNearest) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -337,8 +338,6 @@ void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[], int 
     if (g_isMinificationNearest) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     else glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glBindVertexArray(models[cur_idx].shapes[i].vao);
-    // [TODO] Bind texture and modify texture filtering & wrapping mode
-    // glTexParameteri
     glViewport(x, y, g_windowWidth / 2, g_windowHeight);
     glDrawArrays(GL_TRIANGLES, 0, models[cur_idx].shapes[i].vertex_count);
   }
