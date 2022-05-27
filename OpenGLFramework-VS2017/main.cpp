@@ -78,7 +78,6 @@ struct PhongMaterial {
   Vector3 Kd;
   Vector3 Ks;
   GLuint diffuseTexture;
-  bool isEye;
   vector<pair<GLfloat, GLfloat>> offsets;
 };
 
