@@ -319,9 +319,11 @@ void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[], int 
     glUniform3f(uniform.iLocMaterialAmbient,  models[cur_idx].shapes[i].material.Ka.x, models[cur_idx].shapes[i].material.Ka.y, models[cur_idx].shapes[i].material.Ka.z);
     glUniform3f(uniform.iLocMaterialDiffuse,  models[cur_idx].shapes[i].material.Kd.x, models[cur_idx].shapes[i].material.Kd.y, models[cur_idx].shapes[i].material.Kd.z);
     glUniform3f(uniform.iLocMaterialSpecular, models[cur_idx].shapes[i].material.Ks.x, models[cur_idx].shapes[i].material.Ks.y, models[cur_idx].shapes[i].material.Ks.z);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, models[cur_idx].shapes[i].material.diffuseTexture);
     glBindVertexArray(models[cur_idx].shapes[i].vao);
     // [TODO] Bind texture and modify texture filtering & wrapping mode
-    // Hint: glActiveTexture, glBindTexture, glTexParameteri
+    // glTexParameteri
     glViewport(x, y, g_windowWidth / 2, g_windowHeight);
     glDrawArrays(GL_TRIANGLES, 0, models[cur_idx].shapes[i].vertex_count);
   }
@@ -747,9 +749,11 @@ GLuint LoadTextureImage(string image_path)
   {
     GLuint tex = 0;
 
-    // [TODO] Bind the image to texture
-    // Hint: glGenTextures, glBindTexture, glTexImage2D, glGenerateMipmap
-
+    // Bind the image to texture
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
     // free the image from memory after binding to texture
     stbi_image_free(data);
     return tex;
