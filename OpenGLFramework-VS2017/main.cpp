@@ -101,7 +101,7 @@ struct model
   Vector3 scale = Vector3(1, 1, 1);
   Vector3 rotation = Vector3(0, 0, 0);  // Euler form
   vector<Shape> shapes;
-  bool hasEye;
+  bool hasEye = false;
   GLint max_eye_offset = 7;
   GLint cur_eye_offset_idx = 0;
 };
@@ -455,6 +455,18 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
   }
   if (key == GLFW_KEY_B && action == GLFW_PRESS) {
     g_isMinificationNearest ^= 1;
+    return;
+  }
+  if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
+    if (models[cur_idx].hasEye) {
+      models[cur_idx].cur_eye_offset_idx = (models[cur_idx].cur_eye_offset_idx + 1) % models[cur_idx].max_eye_offset;
+    }
+    return;
+  }
+  if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
+    if (models[cur_idx].hasEye) {
+      models[cur_idx].cur_eye_offset_idx = (models[cur_idx].cur_eye_offset_idx - 1 + models[cur_idx].max_eye_offset) % models[cur_idx].max_eye_offset;
+    }
     return;
   }
 }
@@ -910,6 +922,7 @@ void LoadTexturedModels(string model_path)
       
     }
     if (materials[i].diffuse_texname.find("Eye") != string::npos) {
+      tmp_model.hasEye = true;
       material.offsets = {{0.f, 0.f}, {0.f, -0.25f}, {0.f, -0.5f}, {0.f, -0.75f}, {0.5f, 0.f}, {0.5f, -0.25f}, {0.5f, -0.5f}};
     }
     allMaterial.push_back(material);
