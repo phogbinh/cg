@@ -7,7 +7,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "textfile.h"
-
+#define STB_IMAGE_IMPLEMENTATION
+#include <STB/stb_image.h>
 #include "Vectors.h"
 #include "Matrices.h"
 #define TINYOBJLOADER_IMPLEMENTATION
@@ -75,6 +76,9 @@ struct PhongMaterial {
   Vector3 Ka;
   Vector3 Kd;
   Vector3 Ks;
+  GLuint diffuseTexture;
+  bool isEye;
+  vector<pair<GLfloat, GLfloat>> offsets;
 };
 
 typedef struct {
@@ -87,7 +91,7 @@ typedef struct {
   GLuint p_normal;
   PhongMaterial material;
   int indexCount;
-  GLuint m_texture;
+  GLuint p_texCoord;
 } Shape;
 
 struct model
@@ -96,6 +100,9 @@ struct model
   Vector3 scale = Vector3(1, 1, 1);
   Vector3 rotation = Vector3(0, 0, 0);  // Euler form
   vector<Shape> shapes;
+  bool hasEye;
+  GLint max_eye_offset = 7;
+  GLint cur_eye_offset_idx = 0;
 };
 vector<model> models;
 
@@ -313,6 +320,8 @@ void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[], int 
     glUniform3f(uniform.iLocMaterialDiffuse,  models[cur_idx].shapes[i].material.Kd.x, models[cur_idx].shapes[i].material.Kd.y, models[cur_idx].shapes[i].material.Kd.z);
     glUniform3f(uniform.iLocMaterialSpecular, models[cur_idx].shapes[i].material.Ks.x, models[cur_idx].shapes[i].material.Ks.y, models[cur_idx].shapes[i].material.Ks.z);
     glBindVertexArray(models[cur_idx].shapes[i].vao);
+    // [TODO] Bind texture and modify texture filtering & wrapping mode
+    // Hint: glActiveTexture, glBindTexture, glTexParameteri
     glViewport(x, y, g_windowWidth / 2, g_windowHeight);
     glDrawArrays(GL_TRIANGLES, 0, models[cur_idx].shapes[i].vertex_count);
   }
@@ -350,6 +359,9 @@ void RenderScene(void) {
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
   // Call back function for keyboard
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+    exit(0);
+  }
   if (key == GLFW_KEY_W && action == GLFW_PRESS) {
     g_isWireframe ^= 1;
     return;
@@ -585,6 +597,7 @@ void setShaders(GLuint& p, const char* vertexShaderFilename, const char* fragmen
   uniform.iLocMaterialAmbient  = glGetUniformLocation(p, "material.ambient");
   uniform.iLocMaterialDiffuse  = glGetUniformLocation(p, "material.diffuse");
   uniform.iLocMaterialSpecular = glGetUniformLocation(p, "material.specular");
+  // [TODO] Get uniform location of texture
 
   if (!success) {
     system("pause");
@@ -592,7 +605,7 @@ void setShaders(GLuint& p, const char* vertexShaderFilename, const char* fragmen
   }
 }
 
-void normalization(tinyobj::attrib_t* attrib, vector<GLfloat>& vertices, vector<GLfloat>& colors, vector<GLfloat>& normals, tinyobj::shape_t* shape)
+void normalization(tinyobj::attrib_t* attrib, vector<GLfloat>& vertices, vector<GLfloat>& colors, vector<GLfloat>& normals, vector<GLfloat>& textureCoords, vector<int>& material_id, tinyobj::shape_t* shape)
 {
   vector<float> xVector, yVector, zVector;
   float minX = 10000, maxX = -10000, minY = 10000, maxY = -10000, minZ = 10000, maxZ = -10000;
@@ -708,6 +721,11 @@ void normalization(tinyobj::attrib_t* attrib, vector<GLfloat>& vertices, vector<
         normals.push_back(attrib->normals[3 * idx.normal_index + 1]);
         normals.push_back(attrib->normals[3 * idx.normal_index + 2]);
       }
+      // Optional: texture coordinate
+      textureCoords.push_back(attrib->texcoords[2 * idx.texcoord_index + 0]);
+      textureCoords.push_back(attrib->texcoords[2 * idx.texcoord_index + 1]);
+      // The material of this vertex
+      material_id.push_back(shape->mesh.material_ids[f]);
     }
     index_offset += fv;
   }
@@ -719,7 +737,99 @@ string GetBaseDir(const string& filepath) {
   return "";
 }
 
-void LoadModels(string model_path)
+GLuint LoadTextureImage(string image_path)
+{
+  int channel, width, height;
+  int require_channel = 4;
+  stbi_set_flip_vertically_on_load(true);
+  stbi_uc *data = stbi_load(image_path.c_str(), &width, &height, &channel, require_channel);
+  if (data != NULL)
+  {
+    GLuint tex = 0;
+
+    // [TODO] Bind the image to texture
+    // Hint: glGenTextures, glBindTexture, glTexImage2D, glGenerateMipmap
+
+    // free the image from memory after binding to texture
+    stbi_image_free(data);
+    return tex;
+  }
+  else
+  {
+    cout << "LoadTextureImage: Cannot load image from " << image_path << endl;
+    return -1;
+  }
+}
+
+vector<Shape> SplitShapeByMaterial(vector<GLfloat>& vertices, vector<GLfloat>& colors, vector<GLfloat>& normals, vector<GLfloat>& textureCoords, vector<int>& material_id, vector<PhongMaterial>& materials)
+{
+  vector<Shape> res;
+  for (int m = 0; m < materials.size(); m++)
+  {
+    vector<GLfloat> m_vertices, m_colors, m_normals, m_textureCoords;
+    for (int v = 0; v < material_id.size(); v++) 
+    {
+      // extract all vertices with same material id and create a new shape for it.
+      if (material_id[v] == m)
+      {
+        m_vertices.push_back(vertices[v * 3 + 0]);
+        m_vertices.push_back(vertices[v * 3 + 1]);
+        m_vertices.push_back(vertices[v * 3 + 2]);
+
+        m_colors.push_back(colors[v * 3 + 0]);
+        m_colors.push_back(colors[v * 3 + 1]);
+        m_colors.push_back(colors[v * 3 + 2]);
+
+        m_normals.push_back(normals[v * 3 + 0]);
+        m_normals.push_back(normals[v * 3 + 1]);
+        m_normals.push_back(normals[v * 3 + 2]);
+
+        m_textureCoords.push_back(textureCoords[v * 2 + 0]);
+        m_textureCoords.push_back(textureCoords[v * 2 + 1]);
+      }
+    }
+
+    if (!m_vertices.empty())
+    {
+      Shape tmp_shape;
+      glGenVertexArrays(1, &tmp_shape.vao);
+      glBindVertexArray(tmp_shape.vao);
+
+      glGenBuffers(1, &tmp_shape.vbo);
+      glBindBuffer(GL_ARRAY_BUFFER, tmp_shape.vbo);
+      glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(GL_FLOAT), &m_vertices.at(0), GL_STATIC_DRAW);
+      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+      tmp_shape.vertex_count = m_vertices.size() / 3;
+
+      glGenBuffers(1, &tmp_shape.p_color);
+      glBindBuffer(GL_ARRAY_BUFFER, tmp_shape.p_color);
+      glBufferData(GL_ARRAY_BUFFER, m_colors.size() * sizeof(GL_FLOAT), &m_colors.at(0), GL_STATIC_DRAW);
+      glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+      glGenBuffers(1, &tmp_shape.p_normal);
+      glBindBuffer(GL_ARRAY_BUFFER, tmp_shape.p_normal);
+      glBufferData(GL_ARRAY_BUFFER, m_normals.size() * sizeof(GL_FLOAT), &m_normals.at(0), GL_STATIC_DRAW);
+      glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+      glGenBuffers(1, &tmp_shape.p_texCoord);
+      glBindBuffer(GL_ARRAY_BUFFER, tmp_shape.p_texCoord);
+      glBufferData(GL_ARRAY_BUFFER, m_textureCoords.size() * sizeof(GL_FLOAT), &m_textureCoords.at(0), GL_STATIC_DRAW);
+      glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+      glEnableVertexAttribArray(0);
+      glEnableVertexAttribArray(1);
+      glEnableVertexAttribArray(2);
+      glEnableVertexAttribArray(3);
+
+      tmp_shape.material = materials[m];
+      res.push_back(tmp_shape);
+    }
+  }
+
+  return res;
+}
+
+void LoadTexturedModels(string model_path)
 {
   vector<tinyobj::shape_t> shapes;
   vector<tinyobj::material_t> materials;
@@ -727,6 +837,8 @@ void LoadModels(string model_path)
   vector<GLfloat> vertices;
   vector<GLfloat> colors;
   vector<GLfloat> normals;
+  vector<GLfloat> textureCoords;
+  vector<int> material_id;
 
   string err;
   string warn;
@@ -763,6 +875,15 @@ void LoadModels(string model_path)
     material.Ka = Vector3(materials[i].ambient[0], materials[i].ambient[1], materials[i].ambient[2]);
     material.Kd = Vector3(materials[i].diffuse[0], materials[i].diffuse[1], materials[i].diffuse[2]);
     material.Ks = Vector3(materials[i].specular[0], materials[i].specular[1], materials[i].specular[2]);
+
+    material.diffuseTexture = LoadTextureImage(base_dir + string(materials[i].diffuse_texname));
+    if (material.diffuseTexture == -1)
+    {
+      cout << "LoadTexturedModels: Fail to load model's material " << i << endl;
+      system("pause");
+      
+    }
+
     allMaterial.push_back(material);
   }
 
@@ -772,44 +893,21 @@ void LoadModels(string model_path)
     vertices.clear();
     colors.clear();
     normals.clear();
-    normalization(&attrib, vertices, colors, normals, &shapes[i]);
+    textureCoords.clear();
+    material_id.clear();
+
+    normalization(&attrib, vertices, colors, normals, textureCoords, material_id, &shapes[i]);
     // printf("Vertices size: %d", vertices.size() / 3);
 
-    Shape tmp_shape;
-    glGenVertexArrays(1, &tmp_shape.vao);
-    glBindVertexArray(tmp_shape.vao);
+    // split current shape into multiple shapes base on material_id.
+    vector<Shape> splitedShapeByMaterial = SplitShapeByMaterial(vertices, colors, normals, textureCoords, material_id, allMaterial);
 
-    glGenBuffers(1, &tmp_shape.vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, tmp_shape.vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GL_FLOAT), &vertices.at(0), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    tmp_shape.vertex_count = vertices.size() / 3;
-
-    glGenBuffers(1, &tmp_shape.p_color);
-    glBindBuffer(GL_ARRAY_BUFFER, tmp_shape.p_color);
-    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GL_FLOAT), &colors.at(0), GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    glGenBuffers(1, &tmp_shape.p_normal);
-    glBindBuffer(GL_ARRAY_BUFFER, tmp_shape.p_normal);
-    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(GL_FLOAT), &normals.at(0), GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-
-    // not support per face material, use material of first face
-    if (allMaterial.size() > 0)
-      tmp_shape.material = allMaterial[shapes[i].mesh.material_ids[0]];
-    tmp_model.shapes.push_back(tmp_shape);
+    // concatenate splited shape to model's shape list
+    tmp_model.shapes.insert(tmp_model.shapes.end(), splitedShapeByMaterial.begin(), splitedShapeByMaterial.end());
   }
   shapes.clear();
   materials.clear();
   models.push_back(tmp_model);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
 }
 
 void initParameter()
@@ -841,9 +939,9 @@ void setupRC()
 
   // OpenGL States and Values
   glClearColor(0.2, 0.2, 0.2, 1.0);
-  vector<string> model_list{ "../NormalModels/bunny5KN.obj", "../NormalModels/dragon10KN.obj", "../NormalModels/lucy25KN.obj", "../NormalModels/teapot4KN.obj", "../NormalModels/dolphinN.obj"};
+  vector<string> model_list{"../TextureModels/Fushigidane.obj", "../TextureModels/Mew.obj","../TextureModels/Nyarth.obj","../TextureModels/Zenigame.obj", "../TextureModels/laurana500.obj", "../TextureModels/Nala.obj", "../TextureModels/Square.obj"};
   // Load five model at here
-  for (auto& modelFilePath : model_list) LoadModels(modelFilePath);
+  for (auto& modelFilePath : model_list) LoadTexturedModels(modelFilePath);
 }
 
 void glPrintContextInfo(bool printExtension)
@@ -879,7 +977,7 @@ int main(int argc, char **argv)
 
     
     // create window
-  GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "110062421_HW2", NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "110062421_HW3", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -895,7 +993,7 @@ int main(int argc, char **argv)
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-    
+  glPrintContextInfo(false);
   // register glfw callback functions
     glfwSetKeyCallback(window, KeyCallback);
   glfwSetScrollCallback(window, scroll_callback);
