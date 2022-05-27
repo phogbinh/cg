@@ -69,6 +69,7 @@ struct Uniform {
   GLint iLocMaterialAmbient;
   GLint iLocMaterialDiffuse;
   GLint iLocMaterialSpecular;
+  GLint iLocEyeOffset;
 };
 Uniform uniform;
 
@@ -319,6 +320,14 @@ void draw(Matrix4& modelTransform, Matrix4& normalTransform, GLfloat mvp[], int 
     glUniform3f(uniform.iLocMaterialAmbient,  models[cur_idx].shapes[i].material.Ka.x, models[cur_idx].shapes[i].material.Ka.y, models[cur_idx].shapes[i].material.Ka.z);
     glUniform3f(uniform.iLocMaterialDiffuse,  models[cur_idx].shapes[i].material.Kd.x, models[cur_idx].shapes[i].material.Kd.y, models[cur_idx].shapes[i].material.Kd.z);
     glUniform3f(uniform.iLocMaterialSpecular, models[cur_idx].shapes[i].material.Ks.x, models[cur_idx].shapes[i].material.Ks.y, models[cur_idx].shapes[i].material.Ks.z);
+    if (!models[cur_idx].shapes[i].material.offsets.empty()) { // eye
+      glUniform2f(uniform.iLocEyeOffset,
+                  models[cur_idx].shapes[i].material.offsets[models[cur_idx].cur_eye_offset_idx].first,
+                  models[cur_idx].shapes[i].material.offsets[models[cur_idx].cur_eye_offset_idx].second);
+    }
+    else {
+      glUniform2f(uniform.iLocEyeOffset, 0.f, 0.f);
+    }
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, models[cur_idx].shapes[i].material.diffuseTexture);
     glBindVertexArray(models[cur_idx].shapes[i].vao);
@@ -599,7 +608,7 @@ void setShaders(GLuint& p, const char* vertexShaderFilename, const char* fragmen
   uniform.iLocMaterialAmbient  = glGetUniformLocation(p, "material.ambient");
   uniform.iLocMaterialDiffuse  = glGetUniformLocation(p, "material.diffuse");
   uniform.iLocMaterialSpecular = glGetUniformLocation(p, "material.specular");
-  // [TODO] Get uniform location of texture
+  uniform.iLocEyeOffset = glGetUniformLocation(p, "eyeOffset");
 
   if (!success) {
     system("pause");
@@ -887,7 +896,9 @@ void LoadTexturedModels(string model_path)
       system("pause");
       
     }
-
+    if (materials[i].diffuse_texname.find("Eye") != string::npos) {
+      material.offsets = {{0.f, 0.f}, {0.f, -0.25f}, {0.f, -0.5f}, {0.f, -0.75f}, {0.5f, 0.f}, {0.5f, -0.25f}, {0.5f, -0.5f}};
+    }
     allMaterial.push_back(material);
   }
 

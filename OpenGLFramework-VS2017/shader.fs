@@ -24,6 +24,7 @@ struct Material {
 uniform vec3 viewPos;
 uniform Light light;
 uniform Material material;
+uniform vec2 eyeOffset;
 uniform sampler2D sampleTexture;
 
 in vec3 interpolatePos;
@@ -66,5 +67,5 @@ void main() {
   }
   // light
   vec3 result = (ambient + diffuse + specular) * interpolateColor; // component-wise multiplication
-  FragColor = texture(sampleTexture, interpolateTexCoord) * vec4(result, 1.f); // component-wise multiplication
+  FragColor = texture(sampleTexture, interpolateTexCoord + eyeOffset) * vec4(result, 1.f); // component-wise multiplication
 }
